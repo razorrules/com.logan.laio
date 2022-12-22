@@ -1,0 +1,24 @@
+{
+  "name": "com.logan.laio",
+  "version": "0.0.1",
+  "displayName": "Laio",
+  "description": "Logans all in one",
+  "unity": "2020.1",
+  "unityRelease": "0b5",
+  "documentationUrl": "https://example.com/",
+  "changelogUrl": "https://example.com/changelog.html",
+  "licensesUrl": "https://example.com/licensing.html",
+  "dependencies": {},
+  "author": {
+    "name": "Logan",
+    "email": "logang730@gmail.com",
+    "url": "https://github.com/razorrules/Laio"
+  },
+  "samples": [
+    {
+      "displayName": "FPS Template",
+      "description": "Sample template for an FPS game.",
+      "path":  "Samples~/FPSTemplate"
+    }
+  ]
+}

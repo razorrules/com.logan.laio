@@ -1,0 +1,16 @@
+{
+    "name": "Laio.Tools",
+    "rootNamespace": "",
+    "references": [
+        "GUID:46f04460c81322345845d518c9bb3a58"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
