@@ -21,6 +21,13 @@ using System.Text;
 public static class Extensions
 {
 
+    public static Vector3 normalizeIfNeeded(this Vector3 v)
+    {
+        if (v.magnitude > 1)
+            return v.normalized;
+        return v;
+    }
+
     //--------------- Transforms --------------//
 
     /// <summary>
