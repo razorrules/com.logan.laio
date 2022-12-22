@@ -1,9 +1,8 @@
 {
-    "name": "Laio.Tools.Editor",
+    "name": "Laio.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:46f04460c81322345845d518c9bb3a58",
-        "GUID:cb80660c59fa32e4791d43b3593a2510"
+        "GUID:46f04460c81322345845d518c9bb3a58"
     ],
     "includePlatforms": [],
     "excludePlatforms": [
