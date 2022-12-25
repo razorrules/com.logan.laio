@@ -2,94 +2,115 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-public static class GizmoDrawer
+namespace Laio
 {
-
-    /*
-     * 
-     * https://www.youtube.com/watch?v=-6H-uYh80vc&list=PLKeKudbESdcy6TlcfyYWrh3yChaQ-g0PB&ab_channel=Tarodev
-     * 
-     */
-
-    public static void DrawTexture()
+    /// <summary>
+    /// Adds a ton of additional gizmos drawing methods so you can visalize what you need.
+    /// </summary>
+    public static class GizmoDrawer
     {
 
-    }
-
-    //TODO: Cleanup
-    public static void DrawPie(Transform transform, float FOV, float SightDistance, Color? color = null, int Thickness = 3)
-    {
+        /// <summary>
+        /// Draw a pie at a given transform. Great for visualizing FOV or sight perception.
+        /// </summary>
+        /// <param name="Transform">Where to draw the pie and what rotation</param>
+        /// <param name="FOV">FOV of pie</param>
+        /// <param name="Distance">Distance</param>
+        /// <param name="Color">Color of the line</param>
+        /// <param name="Thickness">Thickness of the line</param>
+        public static void DrawPie(Transform Transform, float FOV, float Distance, Color? Color = null, float Thickness = 3)
+        {
 #if UNITY_EDITOR
-        Matrix4x4 cache = Handles.matrix;
-        Color cacheColor = Handles.color;
-        if (color.HasValue)
-            Handles.color = color.Value;
-        else
-            Handles.color = Color.blue;
+            Matrix4x4 cache = Handles.matrix;
+            Color cacheColor = Handles.color;
+            if (Color.HasValue)
+                Handles.color = Color.Value;
+            else
+                Handles.color = UnityEngine.Color.blue;
 
-        Vector3 p1 = -(Quaternion.AngleAxis(-FOV, Vector3.down) * -transform.forward) * SightDistance;
-        Vector3 p2 = -(Quaternion.AngleAxis(FOV, Vector3.down) * -transform.forward) * SightDistance;
-        Handles.matrix = Matrix4x4.TRS(transform.position, transform.rotation, Vector3.one);
-        Handles.DrawLine(Vector3.zero, p1, 3);
-        Handles.DrawLine(Vector3.zero, p2, 3);
+            Vector3 p1 = -(Quaternion.AngleAxis(-FOV, Vector3.down) * -Transform.forward) * Distance;
+            Vector3 p2 = -(Quaternion.AngleAxis(FOV, Vector3.down) * -Transform.forward) * Distance;
+            Handles.matrix = Matrix4x4.TRS(Transform.position, Transform.rotation, Vector3.one);
+            Handles.DrawLine(Vector3.zero, p1, Thickness);
+            Handles.DrawLine(Vector3.zero, p2, Thickness);
 
-        Handles.DrawWireArc(Vector3.zero, Vector3.up, transform.forward, FOV, SightDistance, 3);
-        Handles.DrawWireArc(Vector3.zero, Vector3.up, transform.forward, -FOV, SightDistance, 3);
-        Handles.matrix = cache;
-        Handles.color = cacheColor;
+            Handles.DrawWireArc(Vector3.zero, Vector3.up, Transform.forward, FOV, Distance, Thickness);
+            Handles.DrawWireArc(Vector3.zero, Vector3.up, Transform.forward, -FOV, Distance, Thickness);
+            Handles.matrix = cache;
+            Handles.color = cacheColor;
 #endif
-    }
-
-    //Get folder where script templates are, add editor to change it
-    public static void DrawSoldAndWireSphere(Vector3 location, float radius, Color wire, Color solid)
-    {
-        Color _cacheColor = Gizmos.color;
-        Gizmos.color = solid;
-        Gizmos.DrawSphere(location, radius);
-        Gizmos.color = wire;
-        Gizmos.DrawWireSphere(location, radius);
-        Gizmos.color = _cacheColor;
-    }
-
-    public static void DrawSoldAndWireCube(Vector3 location, Vector3 size, Color wire, Color solid)
-    {
-        Color _cacheColor = Gizmos.color;
-        Gizmos.color = solid;
-        Gizmos.DrawCube(location, size);
-        Gizmos.color = wire;
-        Gizmos.DrawWireCube(location, size);
-        Gizmos.color = _cacheColor;
-    }
-
-
-    public static void DrawQuadraticBezier(Vector3 p1, Vector3 p2, Vector3 p3, Color color, int density = 30)
-    {
-        List<Vector3> points = new List<Vector3>();
-        for (int i = 0; i < density; i++)
-        {
-            points.Add(Laio.LaioMath.CalculateQuadraticBezierPoint(p1, p2, p3, (float)i / density));
         }
-        points.Add(Laio.LaioMath.CalculateQuadraticBezierPoint(p1, p2, p3, 1));
-        DrawLine(points, color);
-    }
 
-    public static void DrawLine(IList<Vector3> points, Color color)
-    {
-        if (points == null)
-            return;
-
-        Color cached = Gizmos.color;
-        Gizmos.color = color;
-        for (int i = 0; i < points.Count - 1; i++)
+        /// <summary>
+        /// Draw a solid and wire sphere.
+        /// </summary>
+        /// <param name="location">Location of spheres</param>
+        /// <param name="radius">Radius of spheres</param>
+        /// <param name="wire">Wireframe sphere color</param>
+        /// <param name="solid">Solid sphere color</param>
+        public static void DrawSoldAndWireSphere(Vector3 location, float radius, Color wire, Color solid)
         {
-            Gizmos.DrawLine(points[i], points[i + 1]);
+            Color _cacheColor = Gizmos.color;
+            Gizmos.color = solid;
+            Gizmos.DrawSphere(location, radius);
+            Gizmos.color = wire;
+            Gizmos.DrawWireSphere(location, radius);
+            Gizmos.color = _cacheColor;
         }
-        Gizmos.color = cached;
-    }
 
+        /// <summary>
+        /// Draw a solid and wire cube
+        /// </summary>
+        /// <param name="location">Location of cubes</param>
+        /// <param name="size">Side of cubes</param>
+        /// <param name="wire">Color of wire cube</param>
+        /// <param name="solid">Color of solid cube</param>
+        public static void DrawSoldAndWireCube(Vector3 location, Vector3 size, Color wire, Color solid)
+        {
+            Color _cacheColor = Gizmos.color;
+            Gizmos.color = solid;
+            Gizmos.DrawCube(location, size);
+            Gizmos.color = wire;
+            Gizmos.DrawWireCube(location, size);
+            Gizmos.color = _cacheColor;
+        }
+
+        /// <summary>
+        /// Draw a quadratic bezier curve.
+        /// </summary>
+        /// <param name="Start">Start point of curve</param>
+        /// <param name="End">End point of curve</param>
+        /// <param name="Control">Control point of curve (Apex)</param>
+        /// <param name="color">Color of line</param>
+        /// <param name="density">Density to draw</param>
+        public static void DrawQuadraticBezier(Vector3 Start, Vector3 End, Vector3 Control, Color color, int density = 30)
+        {
+            List<Vector3> points = new List<Vector3>();
+            for (int i = 0; i < density; i++)
+            {
+                points.Add(Laio.LaioMath.CalculateQuadraticBezierPoint(Start, End, Control, (float)i / density));
+            }
+            points.Add(Laio.LaioMath.CalculateQuadraticBezierPoint(Start, End, Control, 1));
+            DrawLine(points, color);
+        }
+
+        public static void DrawLine(IList<Vector3> points, Color color)
+        {
+            if (points == null)
+                return;
+
+            Color cached = Gizmos.color;
+            Gizmos.color = color;
+            for (int i = 0; i < points.Count - 1; i++)
+            {
+                Gizmos.DrawLine(points[i], points[i + 1]);
+            }
+            Gizmos.color = cached;
+        }
+
+    }
 }

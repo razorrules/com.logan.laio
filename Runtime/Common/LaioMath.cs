@@ -7,26 +7,36 @@ using System.Threading.Tasks;
 
 namespace Laio
 {
+    /// <summary>
+    /// Additional methods related to math that might be helpful.
+    /// </summary>
     public static class LaioMath
     {
 
         /// <summary>
         /// Calculate a quadratic bezier curve from three points, using t for step
         /// </summary>
-        /// <param name="p1">Begin point</param>
-        /// <param name="p2">End point</param>
-        /// <param name="p3">Curve control point</param>
+        /// <param name="Start">Begin point</param>
+        /// <param name="End">End point</param>
+        /// <param name="Control">Curve control point</param>
         /// <param name="t">time</param>
         /// <returns>Location on curve</returns>
-        public static UnityEngine.Vector3 CalculateQuadraticBezierPoint(UnityEngine.Vector3 p1, UnityEngine.Vector3 p2, UnityEngine.Vector3 p3, float t)
+        public static UnityEngine.Vector3 CalculateQuadraticBezierPoint(UnityEngine.Vector3 Start, UnityEngine.Vector3 End, UnityEngine.Vector3 Control, float t)
         {
             float u = (1 - t);
             float us = u * u;
             float ts = t * t;
-            UnityEngine.Vector3 returnVal = us * p1 + 2 * u * t * p3 + ts * p2;
+            UnityEngine.Vector3 returnVal = us * Start + 2 * u * t * Control + ts * End;
             return returnVal;
         }
 
+        /// <summary>
+        /// Returns blend between two floats
+        /// </summary>
+        /// <param name="current">Current value</param>
+        /// <param name="min">Minimum value</param>
+        /// <param name="max">Maximum value</param>
+        /// <returns>Blend</returns>
         public static float GetBlend(float current, float min, float max)
         {
             if (current < min)

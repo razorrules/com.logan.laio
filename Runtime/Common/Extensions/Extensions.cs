@@ -9,9 +9,6 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 
 /*
- * Code Ripped:
- * https://github.com/mikecann/Unity-Helpers
- * 
  * Look into and improve AddChild
  * maybe <T params>
  * 
@@ -20,7 +17,11 @@ using System.Text;
 
 public static class Extensions
 {
-
+    /// <summary>
+    /// Normalizes a vectory if the magnitube is above 1.0
+    /// </summary>
+    /// <param name="v"></param>
+    /// <returns></returns>
     public static Vector3 normalizeIfNeeded(this Vector3 v)
     {
         if (v.magnitude > 1)
@@ -31,21 +32,59 @@ public static class Extensions
     //--------------- Transforms --------------//
 
     /// <summary>
-    /// Destroy all child game objects of transform.
+    /// Get a random point in bounds. Does not handle rotation.
     /// </summary>
-    public static void DestroyAllChildren(this Transform transform)
-    { foreach (Transform t in transform) { UnityEngine.Object.Destroy(t.gameObject); } }
-
-    public static T GetComponentRef<T>(this Transform t, out T c)
+    /// <param name="bounds"></param>
+    /// <returns>Random point in bounds</returns>
+    public static Vector3 RandomPointInBounds(this Bounds bounds)
     {
-        c = t.GetComponent<T>();
-        return c;
+        System.Random random = new System.Random();
+        Vector3 newPoint = new Vector3(
+        (float)(bounds.extents.x * ((random.NextDouble() - .5f) * 2.0f)),
+        (float)(bounds.extents.x * ((random.NextDouble() - .5f) * 2.0f)),
+        (float)(bounds.extents.x * ((random.NextDouble() - .5f) * 2.0f))
+        );
+        return newPoint;
     }
 
-    //TODO: Implement
-    public static Vector3 GetDirectionClamped(this Transform t, Vector3 target)
+    /// <summary>
+    /// Get a the direction to a given point
+    /// </summary>
+    /// <param name="target">Target to get the direction to</param>
+    /// <returns>Direction to target</returns>
+    public static Vector3 GetDirection(this Transform t, Vector3 target)
     {
-        return Vector3.forward;
+        return (target - t.position).normalized;
+    }
+
+    /// <summary>
+    /// Explicitly set X position of transform
+    /// </summary>
+    /// <param name="T"></param>
+    /// <param name="xPosition">Position to set</param>
+    public static void SetPositionX(this Transform T, float xPosition)
+    {
+        T.transform.position = new Vector3(xPosition, T.transform.position.y, T.position.z);
+    }
+
+    /// <summary>
+    /// Explicitly set Y position of transform
+    /// </summary>
+    /// <param name="T"></param>
+    /// <param name="yPosition">Position to set</param>
+    public static void SetPositionY(this Transform T, float yPosition)
+    {
+        T.transform.position = new Vector3(T.transform.position.x, yPosition, T.position.z);
+    }
+
+    /// <summary>
+    /// Explicitly set Z position of transform
+    /// </summary>
+    /// <param name="T"></param>
+    /// <param name="zPosition">Position to set</param>
+    public static void SetPositionZ(this Transform T, float zPosition)
+    {
+        T.transform.position = new Vector3(T.transform.position.x, T.position.y, zPosition);
     }
 
     /// <summary>
@@ -54,6 +93,17 @@ public static class Extensions
     public static void DestroyAllChildrenImmediate(this Transform transform)
     { foreach (Transform t in transform) { UnityEngine.Object.DestroyImmediate(t.gameObject); } }
 
+
+    /// <summary>
+    /// Destroy all child game objects of transform.
+    /// </summary>
+    public static void DestroyAllChildren(this Transform transform)
+    { foreach (Transform t in transform) { UnityEngine.Object.Destroy(t.gameObject); } }
+
+    /// <summary>
+    /// Move all children to a new parent
+    /// </summary>
+    /// <param name="parent">Transform to transfer all children to.</param>
     public static void MoveChildren(this Transform transform, Transform parent)
     { foreach (Transform t in transform) { t.SetParent(parent); } }
 
@@ -264,8 +314,17 @@ public static class Extensions
         return null;
     }
 
+    public static List<GameObject> GetAllChildren(this Transform transform)
+    {
+        List<GameObject> children = new List<GameObject>();
+        foreach (Transform t in transform)
+            children.Add(t.gameObject);
+        return children;
+    }
+
     public static void SetOrthographicSizeWithWidthLock(this Camera cam, float desiredHeight)
     {
+
         float desiredAspect = 16f / 9f;
         float aspect = cam.aspect;
         float ratio = desiredAspect / aspect;
@@ -279,8 +338,4 @@ public static class Extensions
     {
         obj = LoadObject(obj.GetType(), name, path, extension);
     }
-
-
-    //C:\Users\logan\AppData\LocalLow\Logan\Laio\Save
-
 }

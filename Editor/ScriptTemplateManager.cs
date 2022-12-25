@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using UnityEditor;
 using UnityEngine;
 
 public static class ScriptTemplateManager
@@ -10,14 +11,11 @@ public static class ScriptTemplateManager
 
     private static List<string> loadedTemplates;
 
-
-    public static List<string> GetLoadedTemplates()
+    // Add a menu item named "Do Something" to MyMenu in the menu bar.
+    [MenuItem("MyMenu/Do Something")]
+    static void DoSomething()
     {
-        if (true)
-        {
-            LoadTemplates();
-        }
-        return loadedTemplates;
+        Debug.Log("Doing Something...");
     }
 
     private static string GetPath()

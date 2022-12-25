@@ -1,11 +1,16 @@
 using UnityEngine;
 using UnityEditor;
 
-public class ReadOnlyAttribute : PropertyAttribute
-{
 
-}
+/// <summary>
+/// A readonly attribute, this simply shows the value in the inspector
+/// but does not allow you to edit it.
+/// </summary>
+public class ReadOnlyAttribute : PropertyAttribute { }
 
+/// <summary>
+/// Drawer for readonly attribute
+/// </summary>
 [CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
 public class ReadOnlyDrawer : PropertyDrawer
 {
@@ -19,6 +24,7 @@ public class ReadOnlyDrawer : PropertyDrawer
                                SerializedProperty property,
                                GUIContent label)
     {
+        //Disable GUI, draw the property and enable it again.
         GUI.enabled = false;
         EditorGUI.PropertyField(position, property, label, true);
         GUI.enabled = true;

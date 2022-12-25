@@ -8,12 +8,15 @@ using UnityEngine.EventSystems;
 
 namespace Laio
 {
-    //Load scene async, return progress
 
-    //Include reference to TaroDev
     public static class Helper
     {
+
         private static Camera _camera;
+        /// <summary>
+        /// Static reference to the first camera found. Caches value so it does not look for it every time. 
+        /// If null, will find next camera.
+        /// </summary>
         public static Camera camera
         {
             get
@@ -25,6 +28,10 @@ namespace Laio
 
         private static PointerEventData _eventDataCurrentPosition;
         private static List<RaycastResult> _results;
+        /// <summary>
+        /// Is the mouse pointer currently overtop of a UI element.
+        /// </summary>
+        /// <returns>Is the moust over UI</returns>
         public static bool IsOverUI()
         {
             _eventDataCurrentPosition = new PointerEventData(EventSystem.current) { position = Input.mousePosition };
@@ -33,32 +40,28 @@ namespace Laio
             return _results.Count > 0;
         }
 
-        public static bool HasSaveDirectory(string dir = "/game_save")
+        public static int CheapDistance(Vector3 p1, Vector3 p2, float distance)
+        {
+            float actualDistance = (p1 - p2).sqrMagnitude;
+            float d = (distance * distance);
+            if (actualDistance < d)
+                return -1;
+            if (actualDistance > d)
+                return 1;
+            else
+                return 0;
+
+        }
+
+        /// <summary>
+        /// Checks if the game has a save directory
+        /// </summary>
+        /// <param name="dir"></param>
+        /// <returns></returns>
+        public static bool HasSaveDirectory(string dir = "/Save")
         {
             return Directory.Exists(Application.persistentDataPath + dir);
         }
-
-        //public static async string Download(string url)
-        //{
-        //    HttpWebRequest request;
-        //    string responseText = await Task.Run(() =>
-        //    {
-        //        try
-        //        {
-        //            HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
-        //            WebResponse response = request.GetResponse();
-        //            Stream responseStream = response.GetResponseStream();
-        //            return new StreamReader(responseStream).ReadToEnd();
-        //        }
-        //        catch (Exception e)
-        //        {
-        //            Debug.LogError("Failed make request");
-        //        }
-        //    });
-
-        //    return null;
-        //}
-
 
         /// <summary>
         /// Get a random vector3 that -1,1 not normalized
@@ -101,16 +104,15 @@ namespace Laio
             return returnValue;
         }
 
-
-        public static class Enum
+        /// <summary>
+        /// Get a random enum value
+        /// </summary>
+        /// <typeparam name="T">Type of get a rando</typeparam>
+        /// <returns></returns>
+        public static T RandomEnum<T>() where T : Enum
         {
-            public static T Random<T>()
-            {
-                var v = System.Enum.GetValues(typeof(T));
-                return (T)v.GetValue(UnityEngine.Random.Range(0, v.Length));
-            }
+            var v = System.Enum.GetValues(typeof(T));
+            return (T)v.GetValue(UnityEngine.Random.Range(0, v.Length));
         }
-
-
     }
 }

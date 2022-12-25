@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<data>
+
+  //=========================== Using ==============//
+
+  <using Key="System">using System;</using>
+
+  <using Key="System_Linq">using System.Linq;</using>
+
+  <using Key="System_Collections">using System.Collections;</using>
+
+  <using Key="System_Collections_Generic">using System.Collections.Generic;</using>
+
+  <using Key="UnityEngine">using UnityEngine;</using>
+
+  <using Key="UnityEngine_UI">using UnityEngine.UI;</using>
+
+  <using Key="TMPro">using TMPro;</using>
+
+  <using Key="Laio">using Laio;</using>
+  <using Key="Laio_Tools">using Laio.Tools;</using>
+
+  //=========================== Methods ==============//
+
+  <method Key="Awake">
+    // Initialize
+    private void Awake()
+    {
+
+    }
+  </method>
+
+  <method Key ="Start">
+    // Called first frame
+    private void Start()
+    {
+    #NOTRIM#
+    }
+  </method>
+
+  <method Key="Update">
+    // Called every frame
+    private void Update()
+    {
+    #NOTRIM#
+    }
+  </method>
+
+  <method Key="LateUpdate">
+    // Called after update
+    private void LateUpdate()
+    {
+    #NOTRIM#
+    }
+  </method>
+
+  <method Key="OnEnable">
+    // When game object is enabled
+    private void OnEnable()
+    {
+    #NOTRIM#
+    }
+  </method>
+
+  <method Key="OnDisable">
+    // When game object is disabled
+    private void OnDisable()
+    {
+    #NOTRIM#
+    }
+  </method>
+
+  <method Key="OnTriggerEnter">
+    // When you enter a trigger collider
+    private void OnTriggerEnter(Collider other)
+    {
+    #NOTRIM#
+    }
+  </method>
+  <method Key="OnTriggerExit">
+    // When you enter a trigger collider
+    private void OnTriggerExit(Collider other)
+    {
+    #NOTRIM#
+    }
+  </method>
+
+  <method Key="OnCollisionEnter">
+    // When you enter a trigger collider
+    private void OnCollisionEnter(Collision other)
+    {
+    #NOTRIM#
+    }
+  </method>
+
+  <method Key="OnCollisionExit">
+    // When you enter a trigger collider
+    private void OnCollisionExit(Collision other)
+    {
+    #NOTRIM#
+    }
+  </method>
+
+  <method Key="OnDrawGizmos">
+    // When you enter a trigger collider
+    private void OnDrawGizmos()
+    {
+    #NOTRIM#
+    }
+  </method>
+
+  <method Key="OnGUI">
+    // When you enter a trigger collider
+    private void OnGUI()
+    {
+    #NOTRIM#
+    }
+  </method>
+
+</data>
