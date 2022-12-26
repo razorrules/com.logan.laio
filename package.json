@@ -8,7 +8,9 @@
   "documentationUrl": "https://example.com/",
   "changelogUrl": "https://example.com/changelog.html",
   "licensesUrl": "https://example.com/licensing.html",
-  "dependencies": {},
+  "dependencies": {
+    
+  },
   "author": {
     "name": "Logan",
     "email": "logang730@gmail.com",
@@ -18,7 +20,7 @@
     {
       "displayName": "FPS Template",
       "description": "Sample template for an FPS game.",
-      "path":  "Samples~/FPSTemplate"
+      "path": "Samples~/FPSTemplate"
     }
   ]
 }

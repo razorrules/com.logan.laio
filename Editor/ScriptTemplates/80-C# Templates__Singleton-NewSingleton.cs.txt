@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
     #ROOTNAMESPACEBEGIN#
-public class #SCRIPTNAME# : Singleton<#SCRIPTNAME#>
+public class #SCRIPTNAME# : Singleton<#SCRIPTNAME# >
 {
 
     private void Awake()
     {
+
         SetInstance(this);
+
     }
 
     // Start is called before the first frame update

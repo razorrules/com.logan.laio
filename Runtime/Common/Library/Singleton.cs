@@ -8,15 +8,23 @@ public enum SingletonParams : byte
     DontDestroyOnLoad,
 }
 
+/// <summary>
+/// Simple singleton template
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public abstract class Singleton<T> : MonoBehaviour where T : class
 {
-    private static T _instance;
-
+    //Instance of singleton
     public static T Instance { get; private set; }
 
     //Params
     private SingletonParams[] args;
 
+    /// <summary>
+    /// Set the singleton instance
+    /// </summary>
+    /// <param name="value">Value to set instance to. 'this'</param>
+    /// <param name="args">Arguments for the singleton</param>
     protected virtual void SetInstance(T value, params SingletonParams[] args)
     {
         Instance = value;
@@ -26,9 +34,15 @@ public abstract class Singleton<T> : MonoBehaviour where T : class
             DontDestroyOnLoad(this);
     }
 
+    /// <summary>
+    /// Dispose of the singleton
+    /// </summary>
     protected void DisposeSingleton() =>
         Instance = null;
 
+    /// <summary>
+    /// Does the singleton have a given argument.
+    /// </summary>
     private bool HasArg(SingletonParams arg)
     {
         int pos = Array.IndexOf(args, arg);

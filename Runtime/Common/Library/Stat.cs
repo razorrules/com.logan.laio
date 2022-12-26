@@ -6,6 +6,10 @@ public delegate void OnStatUpdate(float newValue);
 
 namespace Laio.Library
 {
+    /// <summary>
+    /// Struct that can ecapsulate all of Stat's data, can be used to save
+    /// or easily set defaults for a given stat.
+    /// </summary>
     [System.Serializable]
     public struct StatData
     {
@@ -59,6 +63,10 @@ namespace Laio.Library
             }
         }
 
+        /// <summary>
+        /// Initialize stat data with a StatData struct
+        /// </summary>
+        /// <param name="statData">Data to set stat to</param>
         public Stat(StatData statData)
         {
             _current = statData.current;
@@ -68,6 +76,14 @@ namespace Laio.Library
             _drainRate = statData.drainRate;
         }
 
+        /// <summary>
+        /// Initialize a stat
+        /// </summary>
+        /// <param name="current">Current value</param>
+        /// <param name="maximum">Maximum</param>
+        /// <param name="regenerateRate">Regeneration rate</param>
+        /// <param name="drainRate">Draining rate</param>
+        /// <param name="min">Minimum value</param>
         public Stat(float current, float maximum, float regenerateRate, float drainRate, float min = 0)
         {
             _current = current;
@@ -77,6 +93,10 @@ namespace Laio.Library
             _drainRate = drainRate;
         }
 
+        /// <summary>
+        /// Get the stat as a StatData
+        /// </summary>
+        /// <returns></returns>
         public StatData GetStatData()
         {
             return new StatData(Current, _minimum, _maximum, _regenerateRate, _drainRate);

@@ -9,10 +9,28 @@ namespace Laio
     public static class LaioStyle
     {
 
-        static Font font = Font.CreateDynamicFontFromOSFont("Trebuchet MS Bold Italic", 16);
+        static Font font = Font.CreateDynamicFontFromOSFont("Liberation Mono", 14);
 
         static GUIStyle _header;
+        private static GUIStyle _header1;
+        private static GUIStyle _header2;
+        private static GUIStyle _header3;
+        private static GUIStyle _wrappingText;
 
+        public static GUIStyle WrappingText
+        {
+            get
+            {
+                if (_wrappingText == null)
+                {
+                    _wrappingText = new GUIStyle();
+                    _wrappingText.wordWrap = true;
+                    _wrappingText.normal.textColor = Color.white;
+                    _wrappingText.font = font;
+                }
+                return _wrappingText;
+            }
+        }
 
 
         public static GUIStyle Header
@@ -25,14 +43,11 @@ namespace Laio
                     _header.normal.textColor = Color.white;
                     _header.fontSize = 20;
                     _header.font = font;
+                    _header.fontStyle = FontStyle.Bold;
                 }
                 return _header;
             }
         }
-
-        static GUIStyle _header1;
-        static GUIStyle _header2;
-        static GUIStyle _header3;
 
         public static GUIStyle Header1
         {

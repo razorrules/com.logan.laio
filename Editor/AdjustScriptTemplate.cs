@@ -6,31 +6,114 @@ using UnityEngine;
 using Laio;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Xml;
+using System.Xml.Linq;
+using System.Text.RegularExpressions;
 
 namespace Laio.Tools
 {
-    public enum Using
-    {
-        Unity_Editor, System, System_Collections, System_Collections_Generic, TMPro, System_Threading_Tasks,
-    }
-
-    public enum Method
-    {
-        //Basic
-        Awake, Start, Update, LateUpdate, OnEnable, OnDisable,
-        //Other, more uncommon
-        OnTriggerEnter, OnTriggerExit, OnCollisionEnter, OnCollisionExit,
-        OnDrawGizmos, OnGUI
-    }
-
+    /// <summary>
+    /// Adjust the default script template and the ability to create custom
+    /// c# templates. 
+    /// 
+    /// Uses ScriptTemplateSimpleText.xml to figure out all of the settings for this.
+    /// Such as, grabbing a list of available using options, method options etc. This
+    /// also contains the actual code for these keys.
+    /// </summary>
     public class AdjustScriptTemplate : EditorWindow
     {
-        static Settings settings;
 
-        static GUISkin skin;
+        private const string TOAST_DESCRIPTION =
+            "Create a script template. These go in Assets/ScriptTemplates and follow the naming convention of \"{order}-{menu}_{name}-{fileName}\"\n\n" +
+            "You must restart unity for these templates to appear.";
 
-        static string textBox;
-        bool drawSimpleLayout = true;
+        private const string DEFAULT_FILE = "81-C# Script-NewBehaviourScript.cs.txt";
+
+        private static readonly Regex Rgx_WhiteSpace = new Regex(@"\s+");
+
+        internal static string XML_PATH
+        {
+            get
+            {
+                string fileName = "ScriptTemplateSimpleText.xml";
+                return Application.dataPath.Replace("Assets",
+                    "Packages/com.logan.laio/Editor/Resources/") + fileName;
+
+            }
+        }
+
+        internal static string TemplatePath
+        {
+            get
+            {
+                return Application.dataPath + "/ScriptTemplates/";
+            }
+        }
+
+        private Settings _settings;
+        private string _textBox;
+        private static bool _firstOpen;
+        private Vector2 _fileScroll;
+
+        private static XDocument _doc;
+
+        private List<string> _allMethods;
+
+        private List<string> _allUsings;
+
+        /// <summary>
+        /// Get all method keys in XML document
+        /// </summary>
+        public List<string> AllMethodKeys
+        {
+            get
+            {
+                //If value is cached, return that, otherwise get the list.
+                if (_allMethods != null)
+                    return _allMethods;
+
+                _allMethods = new List<string>();
+                List<XElement> elements = xmlDoc.Descendants("method").ToList();
+                //Add the list and return the value
+                foreach (XElement element in elements)
+                    _allMethods.Add(element.Attribute("Key").Value.Trim());
+                return _allMethods;
+            }
+        }
+
+        /// <summary>
+        /// Get all using keys in XML document
+        /// </summary>
+        public List<string> AllUsingKeys
+        {
+            get
+            {
+                //If value is cached, return that, otherwise get the list.
+                if (_allUsings != null)
+                    return _allUsings;
+
+                _allUsings = new List<string>();
+                List<XElement> elements = xmlDoc.Descendants("using").ToList();
+                //Add the list and return the value
+                foreach (XElement element in elements)
+                    _allUsings.Add(element.Attribute("Key").Value.Trim());
+                return _allUsings;
+            }
+        }
+
+        /// <summary>
+        /// Get the XDocument, if it is not set, set it. 
+        /// </summary>
+        public static XDocument xmlDoc
+        {
+            get
+            {
+                if (_doc == null)
+                    _doc = XDocument.Load(XML_PATH);
+                return _doc;
+            }
+        }
 
         // Add menu named "My Window" to the Window menu
         [MenuItem("Tools/Adjust Script Template")]
@@ -38,149 +121,395 @@ namespace Laio.Tools
         {
             // Get existing open window or if none, make a new one:
             AdjustScriptTemplate window = (AdjustScriptTemplate)EditorWindow.GetWindow(typeof(AdjustScriptTemplate));
+            //Set min size and content of window
+            window.minSize = new Vector2(600, 700);
+            window.titleContent.text = "Script templates";
+            window.titleContent.tooltip = "Create script templates and adjust the original script template.";
             window.Show();
+            selectedFile = DEFAULT_FILE;
+            //Flag first open
+            _firstOpen = true;
         }
+
+        /// <summary>
+        /// Sets
+        /// </summary>
+        public void CreateDefaultSettings()
+        {
+            _settings.Methods = new Dictionary<string, bool>();
+            _settings.Usings = new Dictionary<string, bool>();
+
+            foreach (string method in AllMethodKeys)
+                _settings.Methods.Add(method, false);
+            foreach (string use in AllUsingKeys)
+                _settings.Usings.Add(use, false);
+
+            //Default methods
+            _settings.Methods["Start"] = true;
+            _settings.Methods["Update"] = true;
+
+            //Default using statements
+            _settings.Usings["UnityEngine"] = true;
+            _settings.Usings["System"] = true;
+            _settings.Usings["System_Collections"] = true;
+            _settings.Usings["System_Collections_Generic"] = true;
+        }
+
+        /// <summary>
+        /// Reload data
+        /// </summary>
+        private void HotReload()
+        {
+            GUIUtility.keyboardControl = 0;
+            GUIUtility.hotControl = 0;
+            //Create default settings in case there is null, and load
+            CreateDefaultSettings();
+            Load();
+            _firstOpen = false;
+        }
+
 
         private void OnGUI()
         {
+            //Check if a reload needs to take place.
+            if (_settings.Methods == null || _firstOpen)
+                HotReload();
 
-            if (GUILayout.Button("Load"))
+            GUILayout.BeginHorizontal();
+            DrawHierarchy();
+            //Draw options and file editor
+            DrawOptions();
+            GUILayout.EndHorizontal();
+            DrawFile(500);
+
+            GUILayout.BeginHorizontal();
+            //Save current template
+            if (GUILayout.Button("Save"))
             {
-                GUI.skin = Resources.Load("GUI.guiskin") as GUISkin;
-                Load();
+                Save();
             }
 
-            int methodsLength = Enum.GetValues(typeof(Method)).Length;
-            if (settings.methods == null || settings.methods.Length != methodsLength)
+            //Create a new template
+            if (GUILayout.Button("Create Template"))
             {
-                settings.methods = new bool[methodsLength];
-            }
-            int usingLength = Enum.GetValues(typeof(Using)).Length;
-            if (settings.Using == null || settings.Using.Length != usingLength)
-            {
-                settings.Using = new bool[usingLength];
-            }
+                Toast.ShowToast(new ToastContent("Create Tempalte",
+                    TOAST_DESCRIPTION,
+                   new ToastInput[] { new ToastInput("Menu", "C# Templates"), new ToastInput("item name"), new ToastInput("file name") },
+                   new ToastButton[] { new ToastButton("Cancel", 0), new ToastButton("Create", 1) }
+                   ));
 
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Label("Select edit mode");
-            if (GUILayout.Button("Simple Edit"))
-            {
-                drawSimpleLayout = true;
+                Toast.onToastSelection += OnToastSelection;
             }
-            if (GUILayout.Button("Custom"))
-            {
-                drawSimpleLayout = false;
-            }
-            EditorGUILayout.EndHorizontal();
+            GUILayout.EndHorizontal();
 
-            if (drawSimpleLayout)
+        }
+
+        public static string selectedFile = "Default";
+
+        public GUIStyle hierarchy;
+        public GUIStyle hierarchyNotSelected;
+        public GUIStyle hierarchySelected;
+
+        private Vector2 hierarchyScroll = Vector2.zero;
+        public void DrawHierarchy()
+        {
+            GUILayout.BeginVertical("Box");
+
+            if (hierarchyNotSelected == null)
             {
-                DrawBasic();
+                hierarchyNotSelected = new GUIStyle();
+                hierarchyNotSelected.normal.textColor = Color.white;
+
+                hierarchySelected = new GUIStyle();
+                hierarchySelected.normal.textColor = new Color(1, .45f, .45f);
+
+                hierarchy = new GUIStyle();
+
+            }
+            hierarchyScroll = GUILayout.BeginScrollView(hierarchyScroll, GUILayout.Width(200));
+
+            GUILayout.BeginVertical();
+            foreach (string file in Files())
+            {
+                if (selectedFile.Equals(file))
+                {
+                    if (GUILayout.Button(ParseFileNameToReadable(file), hierarchySelected))
+                        selectedFile = file;
+                }
+                else
+                {
+                    if (GUILayout.Button(ParseFileNameToReadable(file), hierarchyNotSelected))
+                    {
+                        selectedFile = file;
+                        HotReload();
+                    }
+                }
+
+            }
+            GUILayout.EndVertical();
+            GUILayout.EndScrollView();
+            GUILayout.EndVertical();
+        }
+
+        public string ParseFileNameToReadable(string input)
+        {
+            //"81-Templates__C# Script-NewBehaviourScript";
+
+            string menu = "";
+            string fileName = "";
+
+            //Value[0] = order
+            //Value[1] = menu & item
+            //Value[1] = file
+            string[] values = input.Split('-');
+
+            string[] menuSplit = values[1].Replace("__", "_").Split('_');
+
+            if (menuSplit.Length == 2)
+            {
+                return menuSplit[0] + "/" + menuSplit[1];
             }
             else
             {
-                DrawAdvanced();
+                return values[1];
             }
-
 
         }
 
-        public void DrawBasic()
+        private List<string> Files()
         {
-            GUILayout.Label("Options: ", LaioStyle.Header);
+            List<string> returnValue = new List<string>();
+            int i = 0;
+            foreach (string s in Directory.GetFiles(TemplatePath))
+            {
+                if (!s.Contains(".meta"))
+                {
+                    returnValue.Add(Path.GetFileName(s));
+                    if (s.Contains(DEFAULT_FILE))
+                    {
+                        returnValue.Swap(0, i);
+                    }
+                    i++;
+                }
+            }
 
-            GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Class Comments: [" + (settings.classComments ? "x" : "") + "]"))
-            {
-                settings.classComments = !settings.classComments;
-            }
-            if (GUILayout.Button("Method Comments: [" + (settings.methodComments ? "x" : "") + "]"))
-            {
-                settings.methodComments = !settings.methodComments;
-            }
-            GUILayout.Label("NameSpace: ");
 
-            settings.nameSpace = GUILayout.TextArea(settings.nameSpace);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.BeginVertical();
-            GUILayout.Label("Methods Implemented", LaioStyle.Header2);
-            for (int i = 0; i < settings.methods.Length; i++)
-            {
-                settings.methods[i] = EditorGUILayout.Toggle(Enum.GetName(typeof(Method), i), settings.methods[i]);
-            }
-            GUILayout.EndVertical();
-            GUILayout.BeginVertical();
-            GUILayout.Label("Usings included", LaioStyle.Header2);
-            for (int i = 0; i < settings.Using.Length; i++)
-            {
-                settings.Using[i] = EditorGUILayout.Toggle(Enum.GetName(typeof(Using), i), settings.Using[i]);
-            }
-            GUILayout.EndVertical();
-            GUILayout.EndHorizontal();
-
-            if (GUILayout.Button("Save"))
-            {
-                Save();
-            }
+            return returnValue;
         }
 
-        //foreach (var file in Directory.GetFiles(path))
-        //    {
-        //        Console.WriteLine(System.IO.Path.GetFileName(file)); // file name
-        //    }
+        /// <summary>
+        /// Called when you confirm the toast. Used to save a new template.
+        /// </summary>
+        /// <param name="values">Values of inputs</param>
+        /// <param name="button">Button pressed</param>
+        private void OnToastSelection(string[] values, int button)
+        {
+            // 0 is the close button, otherwise we confirmed
+            if (button == 0)
+                return;
 
-        //string directory = Environment.CurrentDirectory;
-        //string drive = Path.GetPathRoot(directory);
-        //drive = drive.Remove(2);
-        //string path = $@"{drive}/Program Files/Unity/Hub/Editor/{Application.unityVersion}/Editor/Data/Resources/ScriptTemplates/";
-        //Debug.Log(path);
+            //If inputs is not 3, then probably not what we need, as we use Menu, ItemName, FileName
+            if (values.Length != 3)
+                throw new Exception("Error occured on ToastSelection call back. Not enough values returned.");
+
+            //Create new name
+            string newFile = $"{80}-{values[0]}__{values[1]}-{values[2]}.cs.txt"; ;
+
+            //Create and write the file contents
+            File.Create(Application.dataPath + "/ScriptTemplates/" + newFile).Close();
+            File.WriteAllText(Application.dataPath + "/ScriptTemplates/" + newFile, _textBox);
+
+            //Reimport the new file
+            AssetDatabase.ImportAsset("Assets/ScriptTemplates/" + newFile);
+
+            //Remove delegate assignment
+            Toast.onToastSelection -= OnToastSelection;
+        }
+
+        /// <summary>
+        /// Draw the options for easy editing.
+        /// </summary>
+        public void DrawOptions()
+        {
+            GUILayout.BeginVertical();
+            GUILayout.BeginHorizontal();
+            GUILayout.BeginVertical();
+            //====== Main options
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Class Comments: [" + (_settings.classComments ? "x" : "") + "]"))
+            {
+                _settings.classComments = !_settings.classComments;
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+
+            //====== Methods
+            GUILayout.BeginVertical("Box");
+            GUILayout.Label("Methods Implemented", LaioStyle.Header2);
+
+            foreach (KeyValuePair<string, bool> pair in _settings.Methods.ToList())
+            {
+                _settings.Methods[pair.Key] = EditorGUILayout.Toggle(pair.Key, _settings.Methods[pair.Key]);
+            }
+
+            GUILayout.EndVertical();
+
+            //====== Using
+            GUILayout.BeginVertical("Box");
+            GUILayout.Label("Usings included", LaioStyle.Header2);
+
+            foreach (KeyValuePair<string, bool> pair in _settings.Usings.ToList())
+            {
+                _settings.Usings[pair.Key] = EditorGUILayout.Toggle(pair.Key.Replace("_", "."), _settings.Usings[pair.Key]);
+            }
+
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
+            //Generate text from options button
+            if (GUILayout.Button("Generate"))
+            {
+                GenerateTextFromOptions();
+            }
+            GUILayout.EndVertical();
+
+        }
+
         public string GetPath()
         {
-            string fileName = "81-C# Script-NewBehaviourScript";
-            return Application.dataPath + "/ScriptTemplates/" + fileName + ".cs.txt";
+            return TemplatePath + selectedFile;
         }
 
+        /// <summary>
+        /// Get a value from the XML document
+        /// </summary>
+        /// <param name="descendants">Descendants to look at</param>
+        /// <param name="key">Key to look for</param>
+        /// <returns></returns>
+        public string GetValue(string descendants, string key)
+        {
+            return (string)xmlDoc.Descendants(descendants).ToList().Where(e => e.Attribute("Key").Value.ToLower().Equals(key.ToLower())).FirstOrDefault().Value;
+        }
+
+        /// <summary>
+        /// Generates text from the options you have selected. 
+        /// </summary>
+        public void GenerateTextFromOptions()
+        {
+            StringBuilder strBuilder = new StringBuilder();
+
+            //=== Construct using statements
+            foreach (KeyValuePair<string, bool> pair in _settings.Usings)
+            {
+                if (pair.Value)
+                    strBuilder.Append(GetValue("using", pair.Key) + "\n");
+            }
+
+            //=== Build namespace and class header.
+
+            string comments = "";
+
+            if (_settings.classComments)
+            {
+                comments = "\n" +
+                    "//<Summary>\n" +
+                    "//\n" +
+                    "//</Summary>\n";
+            }
+
+            strBuilder.Append(
+                "\n#ROOTNAMESPACEBEGIN#\n" + comments +
+                "public class #SCRIPTNAME# : MonoBehaviour\n{\n");
+
+            //=== Add methods
+
+            foreach (KeyValuePair<string, bool> pair in _settings.Methods)
+            {
+                if (pair.Value)
+                    strBuilder.Append(GetValue("method", pair.Key));
+            }
+
+            //=== Close string
+
+            strBuilder.Append("\n}\n#ROOTNAMESPACEEND#");
+
+            _textBox = strBuilder.ToString();
+        }
+
+        /// <summary>
+        /// Remove al white space from a string
+        /// </summary>
+        /// <param name="input">String to remove white space from</param>
+        /// <returns>Input with no whitespaces</returns>
+        public static string RemoveWhitespace(string input)
+        {
+            return Rgx_WhiteSpace.Replace(input, "");
+        }
+
+        /// <summary>
+        /// Read the current c# template, and auto populate the settings struct.
+        /// </summary>
         public void Load()
         {
-            ScriptTemplateManager.GetLoadedTemplates();
+            string tokens = "\n";
+            string[] text = File.ReadAllLines(GetPath());
 
-            string[] lines = File.ReadAllLines(GetPath());
+            //String builder to build the text from the file.
+            StringBuilder strBuilder = new StringBuilder();
+            foreach (string str in text)
+                strBuilder.Append(str + tokens);
 
+            string loaded = RemoveWhitespace(strBuilder.ToString());
 
+            //Load all methods
+            foreach (KeyValuePair<string, bool> pair in _settings.Methods.ToList())
+            {
+                if (loaded.ToString().Contains(RemoveWhitespace(GetValue("method", pair.Key))))
+                    _settings.Methods[pair.Key] = true;
+            }
+
+            //Load all usings
+            foreach (KeyValuePair<string, bool> pair in _settings.Usings.ToList())
+            {
+                if (loaded.ToString().Contains(RemoveWhitespace(GetValue("using", pair.Key))))
+                    _settings.Usings[pair.Key] = true;
+            }
+            _textBox = strBuilder.ToString();
         }
 
+        /// <summary>
+        /// Save the new template
+        /// </summary>
         public void Save()
         {
-
+            //Ensure file exsists
+            File.WriteAllText(GetPath(), _textBox);
+            AssetDatabase.ImportAsset("Assets/ScriptTemplates/" + selectedFile);
         }
 
-        public void DrawAdvanced()
+        /// <summary>
+        /// Draw the file for text edit
+        /// </summary>
+        /// <param name="maxHeight">maximum height of text area</param>
+        public void DrawFile(float maxHeight)
         {
-            if (GUILayout.Button("Generate based off basic"))
-            {
-
-            }
-            textBox = EditorGUILayout.TextArea(textBox, GUILayout.Height(500));
-
-            if (GUILayout.Button("Save"))
-            {
-                Save();
-            }
+            //Setup scroll view, and place text area inside
+            _fileScroll = EditorGUILayout.BeginScrollView(_fileScroll, GUILayout.MaxHeight(maxHeight));
+            _textBox = EditorGUILayout.TextArea(_textBox);
+            EditorGUILayout.EndScrollView();
         }
 
-
+        /// <summary>
+        /// struct to store the settings for the editor
+        /// </summary>
         struct Settings
         {
-            public bool methodComments;
-
             public bool classComments;
 
-            public string nameSpace;
-
-            public bool[] Using;
-            public bool[] methods;
+            public Dictionary<string, bool> Methods;
+            public Dictionary<string, bool> Usings;
 
         }
     }

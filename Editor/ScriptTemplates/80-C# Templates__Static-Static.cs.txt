@@ -1,0 +1,15 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+    #ROOTNAMESPACEBEGIN#
+public static class #SCRIPTNAME# : LaioStatic
+{
+
+    public override void BeforeSceneLoad()
+    {
+
+    }
+
+}
+#ROOTNAMESPACEEND#
