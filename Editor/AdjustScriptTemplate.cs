@@ -10,6 +10,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using System.Text.RegularExpressions;
+using Debug = UnityEngine.Debug;
 
 namespace Laio.Tools
 {
@@ -36,10 +37,19 @@ namespace Laio.Tools
         {
             get
             {
-                string fileName = "ScriptTemplateSimpleText.xml";
-                return Application.dataPath.Replace("Assets",
-                    "Packages/com.logan.laio/Editor/Resources/") + fileName;
 
+                return PackagePath + "/Editor/Resources/ScriptTemplateSimpleText.xml";
+
+            }
+        }
+
+        internal static string PackagePath
+        {
+            get
+            {
+                string data = Application.dataPath.Replace("Assets", "Library/PackageCache/");
+                string full = Directory.GetDirectories(data).ToList().Where(s => s.ToLower().Contains("com.logan.laio".ToLower())).FirstOrDefault();
+                return full;
             }
         }
 
@@ -48,6 +58,15 @@ namespace Laio.Tools
             get
             {
                 return Application.dataPath + "/ScriptTemplates/";
+            }
+        }
+
+
+        internal static string CopyTemplatePath
+        {
+            get
+            {
+                return PackagePath + "/Editor/ScriptTemplates/";
             }
         }
 
@@ -156,10 +175,30 @@ namespace Laio.Tools
         }
 
         /// <summary>
+        /// Ensure that the template folder and files exists, if not, copy them from laio template
+        /// </summary>
+        public void EnsureTemplateExists()
+        {
+            //Check if directory exists:
+            if (!Directory.Exists(TemplatePath))
+            {
+                Directory.CreateDirectory(TemplatePath);
+
+                foreach (string file in Directory.GetFiles(CopyTemplatePath))
+                {
+                    File.Copy(file, TemplatePath + Path.GetFileName(file));
+                }
+
+            }
+        }
+
+        /// <summary>
         /// Reload data
         /// </summary>
         private void HotReload()
         {
+            EnsureTemplateExists();
+
             GUIUtility.keyboardControl = 0;
             GUIUtility.hotControl = 0;
             //Create default settings in case there is null, and load
@@ -168,12 +207,48 @@ namespace Laio.Tools
             _firstOpen = false;
         }
 
+        public static void Copy(string sourceDirectory, string targetDirectory)
+        {
+            DirectoryInfo diSource = new DirectoryInfo(sourceDirectory);
+            DirectoryInfo diTarget = new DirectoryInfo(targetDirectory);
+
+            CopyAll(diSource, diTarget);
+        }
+
+        public static void CopyAll(DirectoryInfo source, DirectoryInfo target)
+        {
+            Directory.CreateDirectory(target.FullName);
+
+            // Copy each file into the new directory.
+            foreach (FileInfo fi in source.GetFiles())
+            {
+                Console.WriteLine(@"Copying {0}\{1}", target.FullName, fi.Name);
+                fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
+            }
+
+            // Copy each subdirectory using recursion.
+            foreach (DirectoryInfo diSourceSubDir in source.GetDirectories())
+            {
+                DirectoryInfo nextTargetSubDir =
+                    target.CreateSubdirectory(diSourceSubDir.Name);
+                CopyAll(diSourceSubDir, nextTargetSubDir);
+            }
+        }
+
+
 
         private void OnGUI()
         {
-            //Check if a reload needs to take place.
-            if (_settings.Methods == null || _firstOpen)
-                HotReload();
+            try
+            {
+                //Check if a reload needs to take place.
+                if (_settings.Methods == null || _firstOpen)
+                    HotReload();
+            }
+            catch (FileNotFoundException exception)
+            {
+                return;
+            }
 
             GUILayout.BeginHorizontal();
             DrawHierarchy();
