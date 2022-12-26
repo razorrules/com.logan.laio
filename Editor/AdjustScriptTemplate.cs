@@ -28,7 +28,7 @@ namespace Laio.Tools
             "Create a script template. These go in Assets/ScriptTemplates and follow the naming convention of \"{order}-{menu}_{name}-{fileName}\"\n\n" +
             "You must restart unity for these templates to appear.";
 
-        private const string DEFAULT_NAME = "81-C# Script-NewBehaviourScript";
+        private const string DEFAULT_FILE = "81-C# Script-NewBehaviourScript.cs.txt";
 
         private static readonly Regex Rgx_WhiteSpace = new Regex(@"\s+");
 
@@ -40,6 +40,14 @@ namespace Laio.Tools
                 return Application.dataPath.Replace("Assets",
                     "Packages/com.logan.laio/Editor/Resources/") + fileName;
 
+            }
+        }
+
+        internal static string TemplatePath
+        {
+            get
+            {
+                return Application.dataPath + "/ScriptTemplates/";
             }
         }
 
@@ -114,11 +122,11 @@ namespace Laio.Tools
             // Get existing open window or if none, make a new one:
             AdjustScriptTemplate window = (AdjustScriptTemplate)EditorWindow.GetWindow(typeof(AdjustScriptTemplate));
             //Set min size and content of window
-            window.minSize = new Vector2(500, 700);
+            window.minSize = new Vector2(600, 700);
             window.titleContent.text = "Script templates";
             window.titleContent.tooltip = "Create script templates and adjust the original script template.";
             window.Show();
-
+            selectedFile = DEFAULT_FILE;
             //Flag first open
             _firstOpen = true;
         }
@@ -150,8 +158,10 @@ namespace Laio.Tools
         /// <summary>
         /// Reload data
         /// </summary>
-        private void Reload()
+        private void HotReload()
         {
+            GUIUtility.keyboardControl = 0;
+            GUIUtility.hotControl = 0;
             //Create default settings in case there is null, and load
             CreateDefaultSettings();
             Load();
@@ -163,14 +173,16 @@ namespace Laio.Tools
         {
             //Check if a reload needs to take place.
             if (_settings.Methods == null || _firstOpen)
-                Reload();
+                HotReload();
 
+            GUILayout.BeginHorizontal();
+            DrawHierarchy();
             //Draw options and file editor
             DrawOptions();
+            GUILayout.EndHorizontal();
             DrawFile(500);
 
             GUILayout.BeginHorizontal();
-
             //Save current template
             if (GUILayout.Button("Save"))
             {
@@ -190,6 +202,99 @@ namespace Laio.Tools
             }
             GUILayout.EndHorizontal();
 
+        }
+
+        public static string selectedFile = "Default";
+
+        public GUIStyle hierarchy;
+        public GUIStyle hierarchyNotSelected;
+        public GUIStyle hierarchySelected;
+
+        private Vector2 hierarchyScroll = Vector2.zero;
+        public void DrawHierarchy()
+        {
+            GUILayout.BeginVertical("Box");
+
+            if (hierarchyNotSelected == null)
+            {
+                hierarchyNotSelected = new GUIStyle();
+                hierarchyNotSelected.normal.textColor = Color.white;
+
+                hierarchySelected = new GUIStyle();
+                hierarchySelected.normal.textColor = new Color(1, .45f, .45f);
+
+                hierarchy = new GUIStyle();
+
+            }
+            hierarchyScroll = GUILayout.BeginScrollView(hierarchyScroll, GUILayout.Width(200));
+
+            GUILayout.BeginVertical();
+            foreach (string file in Files())
+            {
+                if (selectedFile.Equals(file))
+                {
+                    if (GUILayout.Button(ParseFileNameToReadable(file), hierarchySelected))
+                        selectedFile = file;
+                }
+                else
+                {
+                    if (GUILayout.Button(ParseFileNameToReadable(file), hierarchyNotSelected))
+                    {
+                        selectedFile = file;
+                        HotReload();
+                    }
+                }
+
+            }
+            GUILayout.EndVertical();
+            GUILayout.EndScrollView();
+            GUILayout.EndVertical();
+        }
+
+        public string ParseFileNameToReadable(string input)
+        {
+            //"81-Templates__C# Script-NewBehaviourScript";
+
+            string menu = "";
+            string fileName = "";
+
+            //Value[0] = order
+            //Value[1] = menu & item
+            //Value[1] = file
+            string[] values = input.Split('-');
+
+            string[] menuSplit = values[1].Replace("__", "_").Split('_');
+
+            if (menuSplit.Length == 2)
+            {
+                return menuSplit[0] + "/" + menuSplit[1];
+            }
+            else
+            {
+                return values[1];
+            }
+
+        }
+
+        private List<string> Files()
+        {
+            List<string> returnValue = new List<string>();
+            int i = 0;
+            foreach (string s in Directory.GetFiles(TemplatePath))
+            {
+                if (!s.Contains(".meta"))
+                {
+                    returnValue.Add(Path.GetFileName(s));
+                    if (s.Contains(DEFAULT_FILE))
+                    {
+                        returnValue.Swap(0, i);
+                    }
+                    i++;
+                }
+            }
+
+
+            return returnValue;
         }
 
         /// <summary>
@@ -226,6 +331,9 @@ namespace Laio.Tools
         /// </summary>
         public void DrawOptions()
         {
+            GUILayout.BeginVertical();
+            GUILayout.BeginHorizontal();
+            GUILayout.BeginVertical();
             //====== Main options
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Class Comments: [" + (_settings.classComments ? "x" : "") + "]"))
@@ -237,7 +345,7 @@ namespace Laio.Tools
             GUILayout.BeginHorizontal();
 
             //====== Methods
-            GUILayout.BeginVertical();
+            GUILayout.BeginVertical("Box");
             GUILayout.Label("Methods Implemented", LaioStyle.Header2);
 
             foreach (KeyValuePair<string, bool> pair in _settings.Methods.ToList())
@@ -248,28 +356,30 @@ namespace Laio.Tools
             GUILayout.EndVertical();
 
             //====== Using
-            GUILayout.BeginVertical();
+            GUILayout.BeginVertical("Box");
             GUILayout.Label("Usings included", LaioStyle.Header2);
 
             foreach (KeyValuePair<string, bool> pair in _settings.Usings.ToList())
             {
-                _settings.Usings[pair.Key] = EditorGUILayout.Toggle(pair.Key, _settings.Usings[pair.Key]);
+                _settings.Usings[pair.Key] = EditorGUILayout.Toggle(pair.Key.Replace("_", "."), _settings.Usings[pair.Key]);
             }
 
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
-
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
             //Generate text from options button
             if (GUILayout.Button("Generate"))
             {
                 GenerateTextFromOptions();
             }
+            GUILayout.EndVertical();
+
         }
 
         public string GetPath()
         {
-            string fileName = "81-C# Script-NewBehaviourScript";
-            return Application.dataPath + "/ScriptTemplates/" + fileName + ".cs.txt";
+            return TemplatePath + selectedFile;
         }
 
         /// <summary>
@@ -366,8 +476,7 @@ namespace Laio.Tools
                 if (loaded.ToString().Contains(RemoveWhitespace(GetValue("using", pair.Key))))
                     _settings.Usings[pair.Key] = true;
             }
-
-
+            _textBox = strBuilder.ToString();
         }
 
         /// <summary>
@@ -377,7 +486,7 @@ namespace Laio.Tools
         {
             //Ensure file exsists
             File.WriteAllText(GetPath(), _textBox);
-            AssetDatabase.ImportAsset("Assets/ScriptTemplates/" + DEFAULT_NAME + ".cs.txt");
+            AssetDatabase.ImportAsset("Assets/ScriptTemplates/" + selectedFile);
         }
 
         /// <summary>
