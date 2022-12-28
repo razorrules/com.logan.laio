@@ -9,7 +9,7 @@ namespace Laio
     public static class LaioStyle
     {
 
-        static Font font = Font.CreateDynamicFontFromOSFont("Liberation Mono", 14);
+        static Font font = Font.CreateDynamicFontFromOSFont("Arial", 12);
 
         static GUIStyle _header;
         private static GUIStyle _header1;

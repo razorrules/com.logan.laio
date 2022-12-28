@@ -13,9 +13,9 @@ namespace Laio
     {
 
         private static Camera _camera;
+
         /// <summary>
         /// Static reference to the first camera found. Caches value so it does not look for it every time. 
-        /// If null, will find next camera.
         /// </summary>
         public static Camera camera
         {
@@ -28,6 +28,7 @@ namespace Laio
 
         private static PointerEventData _eventDataCurrentPosition;
         private static List<RaycastResult> _results;
+
         /// <summary>
         /// Is the mouse pointer currently overtop of a UI element.
         /// </summary>
@@ -40,25 +41,12 @@ namespace Laio
             return _results.Count > 0;
         }
 
-        public static int CheapDistance(Vector3 p1, Vector3 p2, float distance)
-        {
-            float actualDistance = (p1 - p2).sqrMagnitude;
-            float d = (distance * distance);
-            if (actualDistance < d)
-                return -1;
-            if (actualDistance > d)
-                return 1;
-            else
-                return 0;
-
-        }
-
         /// <summary>
         /// Checks if the game has a save directory
         /// </summary>
         /// <param name="dir"></param>
         /// <returns></returns>
-        public static bool HasSaveDirectory(string dir = "/Save")
+        internal static bool HasSaveDirectory(string dir = "/Save")
         {
             return Directory.Exists(Application.persistentDataPath + dir);
         }

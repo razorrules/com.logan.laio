@@ -8,13 +8,6 @@ using Laio;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 
-/*
- * Look into and improve AddChild
- * maybe <T params>
- * 
- */
-
-
 public static class Extensions
 {
     /// <summary>
@@ -22,7 +15,7 @@ public static class Extensions
     /// </summary>
     /// <param name="v"></param>
     /// <returns></returns>
-    public static Vector3 normalizeIfNeeded(this Vector3 v)
+    public static Vector3 NormalizeIfNeeded(this Vector3 v)
     {
         if (v.magnitude > 1)
             return v.normalized;
@@ -32,7 +25,9 @@ public static class Extensions
     //--------------- Transforms --------------//
 
     /// <summary>
-    /// Get a random point in bounds. Does not handle rotation.
+    /// Get a random point in bounds. Does not handle rotation. 
+    /// 
+    /// TODO: Look into this
     /// </summary>
     /// <param name="bounds"></param>
     /// <returns>Random point in bounds</returns>
@@ -149,6 +144,7 @@ public static class Extensions
     {
         return AddChild(parent, "Game Object", components);
     }
+
     /// <summary>
     /// A shortcut for creating a new game object with a number of components and adding it as a child
     /// </summary>
@@ -224,96 +220,6 @@ public static class Extensions
 
     //----------------- Other -----------------//
 
-    /// <summary>
-    /// Saves the scriptable obejct as a JSON to persistent data path.
-    /// </summary>
-    public static void Save(this ScriptableObject objectToSave, string name, string path = "/Save/", string extension = ".txt")
-    {
-        if (objectToSave == null)
-        {
-            Debug.LogError("Attempted to save a null object");
-            return;
-        }
-        if (!Helper.HasSaveDirectory())
-        {
-            Directory.CreateDirectory(Application.persistentDataPath + path);
-        }
-
-        string jsonSave = JsonUtility.ToJson(objectToSave);
-        using (FileStream file = File.Create(Application.persistentDataPath + path + name + extension))
-        {
-            byte[] bytes = Encoding.ASCII.GetBytes(jsonSave);
-            file.Write(bytes, 0, bytes.Length);
-        }
-
-    }
-
-    /// <summary>
-    /// Load a scriptable object
-    /// </summary>
-    public static ScriptableObject LoadObject<T>(string name, string path = "/Save/", string extension = ".txt")
-    {
-        ScriptableObject returnObj = ScriptableObject.CreateInstance(typeof(T));
-
-        if (!Helper.HasSaveDirectory(path))
-        {
-            Directory.CreateDirectory(Application.persistentDataPath + path);
-            return null;
-        }
-
-        if (File.Exists(Application.persistentDataPath + path + name + extension))
-        {
-            string fileContents;
-
-            FileStream file = File.Open(Application.persistentDataPath + path + name + extension, FileMode.Open);
-            using (StreamReader reader = new StreamReader(file))
-            {
-                fileContents = reader.ReadToEnd();
-            }
-            file.Close();
-
-            JsonUtility.FromJsonOverwrite(fileContents, returnObj);
-
-            return returnObj;
-        }
-
-        Debug.LogWarning("No save detected.");
-        return null;
-    }
-
-    /// <summary>
-    /// Load a scriptable object
-    /// </summary>
-    public static ScriptableObject LoadObject(Type type, string name, string path = "/Save/", string extension = ".txt")
-    {
-        ScriptableObject returnObj = ScriptableObject.CreateInstance(type);
-
-        if (!Helper.HasSaveDirectory(path))
-        {
-            Directory.CreateDirectory(Application.persistentDataPath + path);
-            Debug.Log("Path does not exist");
-            return null;
-        }
-
-        if (File.Exists(Application.persistentDataPath + path + name + extension))
-        {
-            string fileContents;
-
-            FileStream file = File.Open(Application.persistentDataPath + path + name + extension, FileMode.Open);
-            using (StreamReader reader = new StreamReader(file))
-            {
-                fileContents = reader.ReadToEnd();
-            }
-            file.Close();
-
-            JsonUtility.FromJsonOverwrite(fileContents, returnObj);
-
-            return returnObj;
-        }
-        Debug.LogWarning("No save detected.");
-        return null;
-    }
-
     public static List<GameObject> GetAllChildren(this Transform transform)
     {
         List<GameObject> children = new List<GameObject>();
@@ -322,6 +228,7 @@ public static class Extensions
         return children;
     }
 
+    //TODO: Look into
     public static void SetOrthographicSizeWithWidthLock(this Camera cam, float desiredHeight)
     {
 
@@ -331,11 +238,4 @@ public static class Extensions
         cam.orthographicSize = desiredHeight * ratio;
     }
 
-    /// <summary>
-    /// Load a scriptable object
-    /// </summary>
-    public static void Load(this ScriptableObject obj, string name, string path = "/Save/", string extension = ".txt")
-    {
-        obj = LoadObject(obj.GetType(), name, path, extension);
-    }
 }

@@ -38,7 +38,7 @@ namespace Laio.Tools
             get
             {
 
-                return PackagePath + "/Editor/Resources/ScriptTemplateSimpleText.xml";
+                return PackagePath + "/Editor/TemplateEditor/ScriptTemplateSimpleText.xml";
 
             }
         }
@@ -66,7 +66,7 @@ namespace Laio.Tools
         {
             get
             {
-                return PackagePath + "/Editor/ScriptTemplates/";
+                return PackagePath + "/Editor/TemplateEditor/ScriptTemplates/";
             }
         }
 
@@ -199,12 +199,19 @@ namespace Laio.Tools
         {
             EnsureTemplateExists();
 
-            GUIUtility.keyboardControl = 0;
-            GUIUtility.hotControl = 0;
-            //Create default settings in case there is null, and load
-            CreateDefaultSettings();
-            Load();
-            _firstOpen = false;
+            try
+            {
+                GUIUtility.keyboardControl = 0;
+                GUIUtility.hotControl = 0;
+                //Create default settings in case there is null, and load
+                CreateDefaultSettings();
+                Load();
+                _firstOpen = false;
+            }
+            catch (DirectoryNotFoundException exception)
+            {
+                this.Close();
+            }
         }
 
         public static void Copy(string sourceDirectory, string targetDirectory)
@@ -559,6 +566,7 @@ namespace Laio.Tools
         /// </summary>
         public void Save()
         {
+
             //Ensure file exsists
             File.WriteAllText(GetPath(), _textBox);
             AssetDatabase.ImportAsset("Assets/ScriptTemplates/" + selectedFile);
