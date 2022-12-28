@@ -3,12 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
     #ROOTNAMESPACEBEGIN#
-public static class #SCRIPTNAME# : LaioStatic
+public class #SCRIPTNAME# : Monobehaviour
 {
 
-    public override void BeforeSceneLoad()
+    private void Awake()
     {
+        #NOTRIM#
+    }
 
+    void Start()
+    {
+        #NOTRIM#
     }
 
 }

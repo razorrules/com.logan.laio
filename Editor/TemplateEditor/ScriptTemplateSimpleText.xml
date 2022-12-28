@@ -19,7 +19,6 @@
   <using Key="TMPro">using TMPro;</using>
 
   <using Key="Laio">using Laio;</using>
-  <using Key="Laio_Tools">using Laio.Tools;</using>
 
   //=========================== Methods ==============//
 
@@ -48,7 +47,6 @@
   </method>
 
   <method Key="LateUpdate">
-    // Called after update
     private void LateUpdate()
     {
     #NOTRIM#
@@ -56,7 +54,6 @@
   </method>
 
   <method Key="OnEnable">
-    // When game object is enabled
     private void OnEnable()
     {
     #NOTRIM#
@@ -64,7 +61,6 @@
   </method>
 
   <method Key="OnDisable">
-    // When game object is disabled
     private void OnDisable()
     {
     #NOTRIM#
@@ -72,14 +68,12 @@
   </method>
 
   <method Key="OnTriggerEnter">
-    // When you enter a trigger collider
     private void OnTriggerEnter(Collider other)
     {
     #NOTRIM#
     }
   </method>
   <method Key="OnTriggerExit">
-    // When you enter a trigger collider
     private void OnTriggerExit(Collider other)
     {
     #NOTRIM#
@@ -87,7 +81,6 @@
   </method>
 
   <method Key="OnCollisionEnter">
-    // When you enter a trigger collider
     private void OnCollisionEnter(Collision other)
     {
     #NOTRIM#
@@ -95,7 +88,6 @@
   </method>
 
   <method Key="OnCollisionExit">
-    // When you enter a trigger collider
     private void OnCollisionExit(Collision other)
     {
     #NOTRIM#
@@ -103,7 +95,6 @@
   </method>
 
   <method Key="OnDrawGizmos">
-    // When you enter a trigger collider
     private void OnDrawGizmos()
     {
     #NOTRIM#
@@ -111,7 +102,6 @@
   </method>
 
   <method Key="OnGUI">
-    // When you enter a trigger collider
     private void OnGUI()
     {
     #NOTRIM#
