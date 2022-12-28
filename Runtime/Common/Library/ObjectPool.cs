@@ -4,6 +4,8 @@ using UnityEngine;
 
 namespace Laio
 {
+    //TODO: Should there be validation so you can't put an unrelated object into the pool?
+
     /// <summary>
     /// Simple object pool class.
     /// 

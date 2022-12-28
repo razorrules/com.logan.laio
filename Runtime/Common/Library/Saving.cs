@@ -78,6 +78,9 @@ public static class Saving
 
 
     //========================  ScriptableObjects  ======================== //
+
+    //TODO: Does saving a scriptable object even make sense?
+
     /// <summary>
     /// Saves the scriptable obejct as a JSON to persistent data path.
     /// </summary>

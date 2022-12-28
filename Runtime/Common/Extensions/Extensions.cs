@@ -8,13 +8,6 @@ using Laio;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 
-/*
- * Look into and improve AddChild
- * maybe <T params>
- * 
- */
-
-
 public static class Extensions
 {
     /// <summary>
@@ -22,7 +15,7 @@ public static class Extensions
     /// </summary>
     /// <param name="v"></param>
     /// <returns></returns>
-    public static Vector3 normalizeIfNeeded(this Vector3 v)
+    public static Vector3 NormalizeIfNeeded(this Vector3 v)
     {
         if (v.magnitude > 1)
             return v.normalized;
@@ -32,7 +25,9 @@ public static class Extensions
     //--------------- Transforms --------------//
 
     /// <summary>
-    /// Get a random point in bounds. Does not handle rotation.
+    /// Get a random point in bounds. Does not handle rotation. 
+    /// 
+    /// TODO: Look into this
     /// </summary>
     /// <param name="bounds"></param>
     /// <returns>Random point in bounds</returns>
@@ -149,6 +144,7 @@ public static class Extensions
     {
         return AddChild(parent, "Game Object", components);
     }
+
     /// <summary>
     /// A shortcut for creating a new game object with a number of components and adding it as a child
     /// </summary>
@@ -232,6 +228,7 @@ public static class Extensions
         return children;
     }
 
+    //TODO: Look into
     public static void SetOrthographicSizeWithWidthLock(this Camera cam, float desiredHeight)
     {
 
