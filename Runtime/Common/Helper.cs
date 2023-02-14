@@ -41,6 +41,30 @@ namespace Laio
             return _results.Count > 0;
         }
 
+        public static Vector3 IntersectionZ(Vector3 origin, Vector3 direction, float targetZ)
+        {
+            Vector3 value = origin;
+            float multiplication = -((origin.z - targetZ) / direction.z);
+            value += direction * multiplication;
+            return value;
+        }
+
+        public static Vector3 IntersectionX(Vector3 origin, Vector3 direction, float targetX)
+        {
+            Vector3 value = origin;
+            float multiplication = -((origin.x - targetX) / direction.x);
+            value += direction * multiplication;
+            return value;
+        }
+
+        public static Vector3 IntersectionY(Vector3 origin, Vector3 direction, float targetY)
+        {
+            Vector3 value = origin;
+            float multiplication = -((origin.y - targetY) / direction.y);
+            value += direction * multiplication;
+            return value;
+        }
+
         /// <summary>
         /// Checks if the game has a save directory
         /// </summary>

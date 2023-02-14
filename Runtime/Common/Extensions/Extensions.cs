@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Laio;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq.Expressions;
@@ -34,12 +35,12 @@ public static class Extensions
     public static Vector3 RandomPointInBounds(this Bounds bounds)
     {
         System.Random random = new System.Random();
-        Vector3 newPoint = new Vector3(
-        (float)(bounds.extents.x * ((random.NextDouble() - .5f) * 2.0f)),
-        (float)(bounds.extents.x * ((random.NextDouble() - .5f) * 2.0f)),
-        (float)(bounds.extents.x * ((random.NextDouble() - .5f) * 2.0f))
-        );
-        return newPoint;
+        return new Vector3()
+        {
+            x = LaioMath.FromBlend(random.NextDouble(), bounds.min.x, bounds.max.x),
+            y = LaioMath.FromBlend(random.NextDouble(), bounds.min.y, bounds.max.y),
+            z = LaioMath.FromBlend(random.NextDouble(), bounds.min.z, bounds.max.z)
+        };
     }
 
     /// <summary>
@@ -236,6 +237,47 @@ public static class Extensions
         float aspect = cam.aspect;
         float ratio = desiredAspect / aspect;
         cam.orthographicSize = desiredHeight * ratio;
+    }
+
+    public static T RandomEnumValueExcluding<T>(params T[] Excluding)
+    {
+        var v = Enum.GetValues(typeof(T));
+        System.Random r = new System.Random();
+        T rv;
+        do
+        {
+            rv = (T)v.GetValue(r.Next(v.Length));
+        } while (Contains(rv));
+
+        bool Contains(T t)
+        {
+            foreach (T x in Excluding)
+                if (x.Equals(t))
+                    return true;
+            return false;
+        }
+
+        return rv;
+    }
+
+    public static T RandomEnumValueExcluding<T>(System.Random r, params T[] Excluding)
+    {
+        var v = Enum.GetValues(typeof(T));
+        T rv;
+        do
+        {
+            rv = (T)v.GetValue(r.Next(v.Length));
+        } while (Contains(rv));
+
+        bool Contains(T t)
+        {
+            foreach (T x in Excluding)
+                if (x.Equals(t))
+                    return true;
+            return false;
+        }
+
+        return rv;
     }
 
 }

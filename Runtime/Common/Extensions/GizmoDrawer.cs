@@ -45,6 +45,27 @@ namespace Laio
 #endif
         }
 
+        public static void DrawBoxCollider(BoxCollider bounds, string label, Color color)
+        {
+            if (bounds == null)
+            {
+                Debug.LogWarning("Bounds are not set for: " + label + ". Go to Hospital singleton and add box collider reference.");
+                return;
+            }
+            Matrix4x4 _cacheMatrix = Gizmos.matrix;
+            Gizmos.matrix = bounds.transform.localToWorldMatrix;
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireCube(bounds.center, bounds.size);
+#if UNITY_EDITOR
+            Matrix4x4 _cachedHandleMatrix = UnityEditor.Handles.matrix;
+            UnityEditor.Handles.matrix = bounds.transform.localToWorldMatrix;
+            UnityEditor.Handles.Label(bounds.center, label);
+            UnityEditor.Handles.matrix = _cachedHandleMatrix;
+#endif
+            Gizmos.matrix = _cacheMatrix;
+
+        }
+
         /// <summary>
         /// Draw a solid and wire sphere.
         /// </summary>
