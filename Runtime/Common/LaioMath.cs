@@ -30,7 +30,7 @@ namespace Laio
             return returnVal;
         }
 
-        //TODO: Come up with better name? 
+        //TODO: Come up with better names? 
 
         /// <summary>
         /// Returns blend between two floats
@@ -48,6 +48,18 @@ namespace Laio
             current -= min;
             max -= min;
             return current / max;
+        }
+
+        public static float FromBlend(float alpha, float min, float max)
+        {
+            float difference = max - min;
+            return min + (difference * UnityEngine.Mathf.Clamp01(alpha));
+        }
+
+        public static float FromBlend(double alpha, float min, float max)
+        {
+            float difference = max - min;
+            return min + (difference * UnityEngine.Mathf.Clamp01((float)alpha));
         }
 
     }
