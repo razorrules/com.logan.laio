@@ -49,6 +49,15 @@ namespace Laio
             return value;
         }
 
+        public static T Next<T>(T current) where T : Enum
+        {
+            var array = Enum.GetValues(typeof(T));
+            int index = Array.IndexOf(array, current) + 1;
+            if (index >= array.Length)
+                index = 0;
+            return (T)Convert.ChangeType(array.GetValue(index), typeof(T));
+        }
+
         public static Vector3 IntersectionX(Vector3 origin, Vector3 direction, float targetX)
         {
             Vector3 value = origin;

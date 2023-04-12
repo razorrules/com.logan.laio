@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Debug = UnityEngine.Debug;
 
-namespace Laio
+namespace Laio.Tools
 {
     /// <summary>
     /// Allows you to run a benchmark on a given method seeing how many milliseconds it takes to complete.

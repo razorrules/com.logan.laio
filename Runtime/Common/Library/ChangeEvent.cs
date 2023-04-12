@@ -1,6 +1,5 @@
 ﻿namespace Laio.Library
 {
-
     public class ChangeEvent<T> where T : struct
     {
         public delegate void OnValueChange(T newValue);
@@ -24,5 +23,4 @@
         }
         public void Set(T newValue) => Value = newValue;
     }
-
 }

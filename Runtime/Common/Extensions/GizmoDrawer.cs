@@ -45,6 +45,13 @@ namespace Laio
 #endif
         }
 
+        public static bool PointInBounds(this Bounds bounds, Vector3 point)
+        {
+            return point.x < bounds.max.x && point.x > bounds.min.x &&
+                point.y < bounds.max.y && point.y > bounds.min.y &&
+                point.z < bounds.max.z && point.z > bounds.min.z;
+        }
+
         public static void DrawBoxCollider(BoxCollider bounds, string label, Color color)
         {
             if (bounds == null)

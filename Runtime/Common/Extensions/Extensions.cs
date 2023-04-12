@@ -2,13 +2,7 @@ using System;
 using System.Collections;
 using Laio;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq.Expressions;
 using UnityEngine;
-using Laio;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-
 public static class Extensions
 {
     /// <summary>
@@ -26,9 +20,19 @@ public static class Extensions
     //--------------- Transforms --------------//
 
     /// <summary>
+    /// Look in a given direction
+    /// </summary>
+    /// <param name="transform"></param>
+    /// <param name="movementDirection"></param>
+    public static void LookInDirection(this Transform transform, Vector3 movementDirection)
+    {
+        Vector3 lookAtPosition = transform.position + movementDirection;
+        lookAtPosition.y = transform.position.y;
+        transform.LookAt(lookAtPosition);
+    }
+
+    /// <summary>
     /// Get a random point in bounds. Does not handle rotation. 
-    /// 
-    /// TODO: Look into this
     /// </summary>
     /// <param name="bounds"></param>
     /// <returns>Random point in bounds</returns>
@@ -51,6 +55,18 @@ public static class Extensions
     public static Vector3 GetDirection(this Transform t, Vector3 target)
     {
         return (target - t.position).normalized;
+    }
+
+    /// <summary>
+    /// Rotate a given vector point around a origin
+    /// </summary>
+    /// <param name="point">Point to be rotated</param>
+    /// <param name="pivot">Origin of the rotation</param>
+    /// <param name="rotation">Rotation to apply</param>
+    /// <returns>Rotated point</returns>
+    public static Vector3 RotateAround(this Vector3 point, Vector3 pivot, Quaternion rotation)
+    {
+        return rotation * (point - pivot) + pivot;
     }
 
     /// <summary>
@@ -221,6 +237,12 @@ public static class Extensions
 
     //----------------- Other -----------------//
 
+
+    /// <summary>
+    /// Get all child objects of a transform
+    /// </summary>
+    /// <param name="transform"></param>
+    /// <returns></returns>
     public static List<GameObject> GetAllChildren(this Transform transform)
     {
         List<GameObject> children = new List<GameObject>();
@@ -229,16 +251,7 @@ public static class Extensions
         return children;
     }
 
-    //TODO: Look into
-    public static void SetOrthographicSizeWithWidthLock(this Camera cam, float desiredHeight)
-    {
-
-        float desiredAspect = 16f / 9f;
-        float aspect = cam.aspect;
-        float ratio = desiredAspect / aspect;
-        cam.orthographicSize = desiredHeight * ratio;
-    }
-
+    //TODO: Look into, what if you were to exclude all? Will it be infinite loop?
     public static T RandomEnumValueExcluding<T>(params T[] Excluding)
     {
         var v = Enum.GetValues(typeof(T));
@@ -260,6 +273,7 @@ public static class Extensions
         return rv;
     }
 
+    //TODO: Look into, what if you were to exclude all? Will it be infinite loop?
     public static T RandomEnumValueExcluding<T>(System.Random r, params T[] Excluding)
     {
         var v = Enum.GetValues(typeof(T));

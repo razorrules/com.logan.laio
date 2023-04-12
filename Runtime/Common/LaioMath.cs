@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -48,6 +49,44 @@ namespace Laio
             current -= min;
             max -= min;
             return current / max;
+        }
+
+        /// <summary>
+        /// Returns blend between two floats
+        /// </summary>
+        /// <param name="current">Current value</param>
+        /// <param name="min">Minimum value</param>
+        /// <param name="max">Maximum value</param>
+        /// <returns>Blend</returns>
+        public static float GetBlend(UnityEngine.Vector3 current, UnityEngine.Vector3 min, UnityEngine.Vector3 max)
+        {
+            float d1 = UnityEngine.Vector3.Distance(ClampPoint(current, min, max), min);
+            float d2 = UnityEngine.Vector3.Distance(ClampPoint(current, min, max), max);
+            return d2 / (d2 + d1);
+        }
+
+        public static UnityEngine.Vector3 ClampPoint(UnityEngine.Vector3 point, UnityEngine.Vector3 segmentStart, UnityEngine.Vector3 segmentEnd)
+        {
+            return ClampProjection(ProjectPoint(point, segmentStart, segmentEnd), segmentStart, segmentEnd);
+        }
+
+        public static UnityEngine.Vector3 ProjectPoint(UnityEngine.Vector3 point, UnityEngine.Vector3 segmentStart, UnityEngine.Vector3 segmentEnd)
+        {
+            return segmentStart + UnityEngine.Vector3.Project(point - segmentStart, segmentEnd - segmentStart);
+        }
+
+        private static UnityEngine.Vector3 ClampProjection(UnityEngine.Vector3 point, UnityEngine.Vector3 start, UnityEngine.Vector3 end)
+        {
+            var toStart = (point - start).sqrMagnitude;
+            var toEnd = (point - end).sqrMagnitude;
+            var segment = (start - end).sqrMagnitude;
+            if (toStart > segment || toEnd > segment) return toStart > toEnd ? end : start;
+            return point;
+        }
+
+        public static UnityEngine.Vector3 RotateAround(UnityEngine.Vector3 point, UnityEngine.Vector3 pivot, UnityEngine.Quaternion rotation)
+        {
+            return rotation * (point - pivot) + pivot;
         }
 
         public static float FromBlend(float alpha, float min, float max)
