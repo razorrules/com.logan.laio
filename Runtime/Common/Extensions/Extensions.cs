@@ -3,6 +3,8 @@ using System.Collections;
 using Laio;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
+
 public static class Extensions
 {
     /// <summary>
@@ -192,6 +194,7 @@ public static class Extensions
     { return list[UnityEngine.Random.Range(0, list.Count)]; }
 
 
+
     /// <summary>
     /// Shuffle full will pick two random indexs and swap them n * n times
     /// </summary>
@@ -205,6 +208,20 @@ public static class Extensions
             int b = UnityEngine.Random.Range(0, list.Count);
             list.Swap(a, b);
         }
+    }
+
+    /// <summary>
+    /// Checks if an index is within the range of the array.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="list"></param>
+    /// <param name="index">Index to check</param>
+    /// <returns>Is the index valid?</returns>
+    public static bool ValidIndex<T>(this IList<T> list, int index)
+    {
+        if (index < 0 || index >= list.Count)
+            return false;
+        return true;
     }
 
     /// <summary>
@@ -249,49 +266,6 @@ public static class Extensions
         foreach (Transform t in transform)
             children.Add(t.gameObject);
         return children;
-    }
-
-    //TODO: Look into, what if you were to exclude all? Will it be infinite loop?
-    public static T RandomEnumValueExcluding<T>(params T[] Excluding)
-    {
-        var v = Enum.GetValues(typeof(T));
-        System.Random r = new System.Random();
-        T rv;
-        do
-        {
-            rv = (T)v.GetValue(r.Next(v.Length));
-        } while (Contains(rv));
-
-        bool Contains(T t)
-        {
-            foreach (T x in Excluding)
-                if (x.Equals(t))
-                    return true;
-            return false;
-        }
-
-        return rv;
-    }
-
-    //TODO: Look into, what if you were to exclude all? Will it be infinite loop?
-    public static T RandomEnumValueExcluding<T>(System.Random r, params T[] Excluding)
-    {
-        var v = Enum.GetValues(typeof(T));
-        T rv;
-        do
-        {
-            rv = (T)v.GetValue(r.Next(v.Length));
-        } while (Contains(rv));
-
-        bool Contains(T t)
-        {
-            foreach (T x in Excluding)
-                if (x.Equals(t))
-                    return true;
-            return false;
-        }
-
-        return rv;
     }
 
 }

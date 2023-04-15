@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Random = System.Random;
 
 namespace Laio
 {
 
     public static class Helper
     {
+
+        private static Random Random = new System.Random();
 
         private static Camera _camera;
 
@@ -51,11 +55,11 @@ namespace Laio
 
         public static T Next<T>(T current) where T : Enum
         {
-            var array = Enum.GetValues(typeof(T));
-            int index = Array.IndexOf(array, current) + 1;
-            if (index >= array.Length)
-                index = 0;
-            return (T)Convert.ChangeType(array.GetValue(index), typeof(T));
+            if (!typeof(T).IsEnum) throw new ArgumentException(String.Format("Argument {0} is not an Enum", typeof(T).FullName));
+
+            T[] Arr = (T[])Enum.GetValues(current.GetType());
+            int j = Array.IndexOf<T>(Arr, current) + 1;
+            return (Arr.Length == j) ? Arr[0] : Arr[j];
         }
 
         public static Vector3 IntersectionX(Vector3 origin, Vector3 direction, float targetX)
@@ -134,6 +138,41 @@ namespace Laio
         {
             var v = System.Enum.GetValues(typeof(T));
             return (T)v.GetValue(UnityEngine.Random.Range(0, v.Length));
+        }
+
+        /// <summary>
+        /// Get a random enum value excluding elements of such enum.
+        /// If calling multiple times, it is recommended to pass the values of the enum, see overload.
+        /// </summary>
+        /// <typeparam name="T">Enum type</typeparam>
+        /// <param name="Excluding">Which enum values should we exclude?</param>
+        /// <returns></returns>
+        public static T RandomEnumExcluding<T>(params T[] Excluding) where T : System.Enum
+        {
+            T[] values = Enum.GetValues(typeof(T)) as T[];
+            if (Excluding.Length >= values.Length)
+                throw new IndexOutOfRangeException("Failed to get RandomEnumValueExcluding. Every value was excluded.");
+            return values.Except(Excluding).ToArray().Rand();
+        }
+
+        /// <summary>
+        /// Get a random enum value excluding elements of such enum.
+        /// <example>
+        /// If you are calling this multiple times, it would be best pratice to cache the values and pass
+        /// <code>
+        /// myEnum = Enum.GetValues(typeof(MyEnum)) as MyEnum[];
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="cachedValues">List of all values in a given enum</param>
+        /// <param name="Excluding"></param>
+        /// <returns></returns>
+        public static T RandomEnumExcluding<T>(T[] cachedValues, params T[] Excluding) where T : System.Enum
+        {
+            if (Excluding.Length >= cachedValues.Length)
+                throw new IndexOutOfRangeException("Failed to get RandomEnumValueExcluding. Every value was excluded.");
+            return cachedValues.Except(Excluding).ToList().Rand();
         }
     }
 }
