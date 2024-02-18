@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Packages/com.logan.laio/Editor/Windows/StyleSheet.uss?fileID=7433441132597879392&amp;guid=6a1ac283b5010c64d9a03ddb717ff3e8&amp;type=3#StyleSheet" />
+    <ui:Label text="MY LABEL" display-tooltip-when-elided="true" />
+    <ui:ScrollView style="height: 722px; background-image: url(&apos;project://database/Packages/com.logan.laio/Runtime/Textures/grid.png?fileID=2800000&amp;guid=5a96d95ab389f7d42bfcf82957250e13&amp;type=3#grid&apos;);">
+        <ui:Button text="Button" display-tooltip-when-elided="true" style="height: 455px; width: 472px;" />
+    </ui:ScrollView>
+</ui:UXML>

@@ -7,7 +7,7 @@ public delegate void OnStatUpdate(float newValue);
 namespace Laio.Library
 {
     /// <summary>
-    /// Struct that can ecapsulate all of Stat's data, can be used to save
+    /// Struct that can encapsulate all of Stat's data, can be used to save
     /// or easily set defaults for a given stat.
     /// </summary>
     [System.Serializable]

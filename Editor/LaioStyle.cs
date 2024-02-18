@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace Laio
+namespace Laio.Editor
 {
 
     public static class LaioStyle

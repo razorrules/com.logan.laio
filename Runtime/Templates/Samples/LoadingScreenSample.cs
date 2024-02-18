@@ -9,17 +9,16 @@ namespace Laio.Samples
     /// Easily extensible to add additional features such as changing background images, loading bar style, etc.
     /// </summary>
 
-    public class LoadingScreenSample : Singleton<LoadingScreenSample>
+    public class LoadingScreenSample : MonoBehaviour
     {
         [SerializeField] private GameObject _loadingPanel;
         [SerializeField] private Slider _slider;
 
         /// <summary>
-        /// Setup singleton along with assining methods to correct delegates.
+        /// Setup singleton along with assigning methods to correct delegates.
         /// </summary>
         private void Awake()
         {
-            SetInstance(this, SingletonParams.DontDestroyOnLoad);
             SceneLoading.onProgressUpdate += OnProgressUpdate;
             SceneLoading.onLoadignScreenVisibilityChange += OnLoadingScreenVisibilityChange;
         }

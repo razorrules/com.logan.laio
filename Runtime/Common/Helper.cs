@@ -70,6 +70,13 @@ namespace Laio
             return value;
         }
 
+        public static string RandomString(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[Random.Next(s.Length)]).ToArray());
+        }
+
         public static Vector3 IntersectionY(Vector3 origin, Vector3 direction, float targetY)
         {
             Vector3 value = origin;
@@ -138,6 +145,11 @@ namespace Laio
         {
             var v = System.Enum.GetValues(typeof(T));
             return (T)v.GetValue(UnityEngine.Random.Range(0, v.Length));
+        }
+
+        public static T GetEnumAtIndex<T>(int index) where T : Enum
+        {
+            return (T)Enum.Parse(typeof(T), Enum.GetNames(typeof(T))[index]);
         }
 
         /// <summary>

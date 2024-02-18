@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Laio
+namespace Laio.Editor
 {
     public struct ToastInput
     {

@@ -12,7 +12,7 @@ using System.Xml.Linq;
 using System.Text.RegularExpressions;
 using Debug = UnityEngine.Debug;
 
-namespace Laio.Tools
+namespace Laio.Editor.Tools
 {
     /// <summary>
     /// Adjust the default script template and the ability to create custom

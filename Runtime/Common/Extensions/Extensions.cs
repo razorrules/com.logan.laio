@@ -4,6 +4,8 @@ using Laio;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public static class Extensions
 {
@@ -194,7 +196,6 @@ public static class Extensions
     { return list[UnityEngine.Random.Range(0, list.Count)]; }
 
 
-
     /// <summary>
     /// Shuffle full will pick two random indexs and swap them n * n times
     /// </summary>
@@ -267,5 +268,34 @@ public static class Extensions
             children.Add(t.gameObject);
         return children;
     }
+
+    //private static RaycastResult HoveringObject(this GraphicRaycaster graphicsRaycaster, out RaycastHit)
+    //{
+    //    //Set up the new Pointer Event
+    //    PointerEventData data = new PointerEventData(EventSystem.current);
+    //    //Set the Pointer Event Position to that of the game object
+    //    data.position = Input.mousePosition;
+
+    //    //Create a list of Raycast Results
+    //    List<RaycastResult> results = new List<RaycastResult>();
+
+    //    //Raycast using the Graphics Raycaster and mouse click position
+    //    graphicsRaycaster.Raycast(data, results);
+
+    //    return results[0];
+    //}
+
+    //private static bool AllHoveringObject(this GraphicRaycaster graphicsRaycaster, out List<RaycastResult> results)
+    //{
+    //    //Set up the new Pointer Event
+    //    PointerEventData data = new PointerEventData(EventSystem.current);
+    //    //Set the Pointer Event Position to that of the game object
+    //    data.position = Input.mousePosition;
+
+    //    //Raycast using the Graphics Raycaster and mouse click position
+    //    rayCaster.Raycast(data, results);
+
+    //    return results;
+    //}
 
 }
