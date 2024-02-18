@@ -3,6 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class | AttributeTargets.Struct, Inherited = true)]
 public class ConditionalHideAttribute : PropertyAttribute
 {
@@ -41,10 +45,6 @@ public class ConditionalHideAttribute : PropertyAttribute
 }
 
 #if UNITY_EDITOR
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
-using UnityEngine;
 
 [CustomPropertyDrawer(typeof(ConditionalHideAttribute))]
 public class ConditionalHideAttributeDrawer : PropertyDrawer
@@ -119,8 +119,6 @@ public class ConditionalHideAttributeDrawer : PropertyDrawer
                 return sourcePropertyValue.animationCurveValue;
             case SerializedPropertyType.Bounds:
                 return sourcePropertyValue.boundsValue;
-            case SerializedPropertyType.Gradient:
-                return sourcePropertyValue.gradientValue;
             case SerializedPropertyType.Quaternion:
                 return sourcePropertyValue.quaternionValue;
             case SerializedPropertyType.ExposedReference:
