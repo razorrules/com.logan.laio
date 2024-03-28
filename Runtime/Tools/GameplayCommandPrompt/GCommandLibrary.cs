@@ -23,8 +23,9 @@ namespace Laio.Tools
             foreach (Assembly assembly in assemblies)
                 Methods.Concat(GetTypes(assembly));
         }
-
+#if UNITY_EDITOR
         [UnityEditor.Callbacks.DidReloadScripts]
+#endif
         private static void OnScriptsReloaded()
         {
             CacheMethods();

@@ -32,14 +32,14 @@ namespace Laio
             else
                 Handles.color = UnityEngine.Color.blue;
 
-            Vector3 p1 = -(Quaternion.AngleAxis(-FOV, Vector3.down) * -Transform.forward) * Distance;
-            Vector3 p2 = -(Quaternion.AngleAxis(FOV, Vector3.down) * -Transform.forward) * Distance;
+            Vector3 p1 = Quaternion.AngleAxis(-FOV, Vector3.up) * Vector3.forward * Distance;
+            Vector3 p2 = Quaternion.AngleAxis(FOV, Vector3.up) * Vector3.forward * Distance;
             Handles.matrix = Matrix4x4.TRS(Transform.position, Transform.rotation, Vector3.one);
             Handles.DrawLine(Vector3.zero, p1, Thickness);
             Handles.DrawLine(Vector3.zero, p2, Thickness);
 
-            Handles.DrawWireArc(Vector3.zero, Vector3.up, Transform.forward, FOV, Distance, Thickness);
-            Handles.DrawWireArc(Vector3.zero, Vector3.up, Transform.forward, -FOV, Distance, Thickness);
+            Handles.DrawWireArc(Vector3.zero, Vector3.up, Vector3.forward, FOV, Distance, Thickness);
+            Handles.DrawWireArc(Vector3.zero, Vector3.up, Vector3.forward, -FOV, Distance, Thickness);
             Handles.matrix = cache;
             Handles.color = cacheColor;
 #endif
