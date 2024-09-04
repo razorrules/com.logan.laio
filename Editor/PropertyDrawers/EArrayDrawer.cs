@@ -18,7 +18,9 @@ namespace Laio.Editor
         {
             if (m_content == null)
             {
-                m_content = property.FindPropertyRelative("m_values");
+                m_content = property.FindPropertyRelative("_values");
+                if (m_content == null)
+                    Debug.LogError("Failed to find '_values' property in EArray");
                 m_type = fieldInfo.FieldType.GenericTypeArguments[0];
                 m_valueNames = Enum.GetNames(m_type);
             }
@@ -50,6 +52,10 @@ namespace Laio.Editor
             if (property.isExpanded)
             {
                 float addY = FOLDOUT_HEIGHT;
+                if (m_content == null)
+                {
+                    m_content.arraySize = m_valueNames.Length;
+                }
                 for (int i = 0; i < m_content.arraySize; i++)
                 {
                     Rect rect = new Rect(position.x, position.y + addY, position.width, EditorGUI.GetPropertyHeight(m_content.GetArrayElementAtIndex(i)));
