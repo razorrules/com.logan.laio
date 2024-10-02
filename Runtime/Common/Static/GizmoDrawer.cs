@@ -80,7 +80,7 @@ namespace Laio
         /// <param name="radius">Radius of spheres</param>
         /// <param name="wire">Wireframe sphere color</param>
         /// <param name="solid">Solid sphere color</param>
-        public static void DrawSoldAndWireSphere(Vector3 location, float radius, Color wire, Color solid)
+        public static void DrawSolidAndWireSphere(Vector3 location, float radius, Color wire, Color solid)
         {
             Color _cacheColor = Gizmos.color;
             Gizmos.color = solid;
@@ -97,7 +97,7 @@ namespace Laio
         /// <param name="size">Side of cubes</param>
         /// <param name="wire">Color of wire cube</param>
         /// <param name="solid">Color of solid cube</param>
-        public static void DrawSoldAndWireCube(Vector3 location, Vector3 size, Color wire, Color solid)
+        public static void DrawSolidAndWireCube(Vector3 location, Vector3 size, Color wire, Color solid)
         {
             Color _cacheColor = Gizmos.color;
             Gizmos.color = solid;

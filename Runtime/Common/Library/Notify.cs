@@ -1,6 +1,6 @@
 ﻿namespace Laio.Library
 {
-    public class ChangeEvent<T> where T : struct
+    public class Notify<T> where T : struct
     {
         public delegate void OnValueChange(T newValue);
         public delegate void OnValueChangeWithOld(T oldValue, T newValue);

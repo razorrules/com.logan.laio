@@ -2,9 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using Laio.Library.Bullets;
 using System.Diagnostics;
+using System.Linq;
 
 /// <summary>
 /// TSolver being required feels wierd and is defined as WHERE T : SOLVER
@@ -25,6 +24,7 @@ namespace Laio.Library.Bullets
         public static BulletSolver<TSolver, TBullet> Instance;
 
         protected HashSet<TBullet> BulletHashSet { get; private set; }
+        private HashSet<TBullet> ToRemove;
 
         public bool CalculateCost { get; set; }
 
@@ -60,6 +60,7 @@ namespace Laio.Library.Bullets
             {
                 Instance = this;
                 BulletHashSet = new HashSet<TBullet>();
+                ToRemove = new HashSet<TBullet>();
             }
             else
             {
@@ -84,7 +85,7 @@ namespace Laio.Library.Bullets
         /// <param name="bullet"></param>
         public void DisposeBullet(TBullet bullet)
         {
-            BulletHashSet.Remove(bullet);
+            ToRemove.Add(bullet);
         }
 
         /// <summary>
@@ -92,6 +93,10 @@ namespace Laio.Library.Bullets
         /// </summary>
         private void Update()
         {
+            //==== Clear before we iterate over the list of bullets.
+            BulletHashSet.ExceptWith(ToRemove);
+            ToRemove.Clear();
+
             if (CalculateCost)
             {
                 Stopwatch stopWatch = new Stopwatch();

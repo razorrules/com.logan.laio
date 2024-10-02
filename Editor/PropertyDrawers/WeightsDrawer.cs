@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
+using Laio;
 
-namespace Laio
+namespace LaioEditor
 {
     [CustomPropertyDrawer(typeof(Weights<>))]
     public class WeightsDrawer : PropertyDrawer
@@ -26,7 +23,6 @@ namespace Laio
                 _type = fieldInfo.FieldType.GenericTypeArguments[0];
                 _weightCount = property.FindPropertyRelative("WeightCount");
             }
-
 
             float height = FOLDOUT_HEIGHT;
 

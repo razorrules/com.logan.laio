@@ -12,7 +12,13 @@ namespace Laio.Library.Bullets
     public abstract class Surface<T> : MonoBehaviour where T : Bullet
     {
 
-        public abstract bool OnImpact(T b, RaycastHit hit);
+        /// <summary>
+        /// Impact check for bullet hitting surface
+        /// </summary>
+        /// <param name="bullet">Bullet data passed in to modify based on surface params</param>
+        /// <param name="hit">Hit from raycast</param>
+        /// <returns>Should the bullet be stopped on impact?</returns>
+        public abstract bool OnImpact(T bullet, RaycastHit hit);
 
     }
 

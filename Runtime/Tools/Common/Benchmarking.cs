@@ -150,7 +150,7 @@ namespace Laio.Tools
         /// <param name="name">Name of the action</param>
         /// <param name="description">Description of the action</param>
         /// <param name="interations">Iterations ran</param>
-        internal static void PrintActionResults(Action a, long elapsedMs, string name = "", string description = "", int interations = 0)
+        private static void PrintActionResults(Action a, long elapsedMs, string name = "", string description = "", int interations = 0)
         {
             string header = (name.Trim().Equals("") == true ?
                 /*Empty name*/  $" Took {elapsedMs}ms ({(elapsedMs / 1000.0).ToString("N3")}s) to run. \n[{a.Method.Name}:\n]" :

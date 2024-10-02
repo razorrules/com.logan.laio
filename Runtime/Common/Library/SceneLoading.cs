@@ -85,8 +85,8 @@ namespace Laio
             } while (currentValue < 1);
 
             asyncOperation = null;
-            onLoadingFinished?.Invoke();
             onLoadignScreenVisibilityChange?.Invoke(false);
+            onLoadingFinished?.Invoke();
         }
 
 

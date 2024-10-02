@@ -1,11 +1,12 @@
 ﻿using System;
 using UnityEditor;
 using UnityEngine;
+using Laio;
 
-namespace Laio.Editor
+namespace LaioEditor
 {
     [CustomPropertyDrawer(typeof(EArray<,>))]
-    public class EnumArrayDrawer : PropertyDrawer
+    public class EArrayDrawer : PropertyDrawer
     {
 
         private const float FOLDOUT_HEIGHT = 16f;
@@ -16,6 +17,8 @@ namespace Laio.Editor
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
+
+            Debug.Log("GetPropertyHeight()");
             if (m_content == null)
             {
                 m_content = property.FindPropertyRelative("m_values");
@@ -36,12 +39,12 @@ namespace Laio.Editor
                     height += EditorGUI.GetPropertyHeight(m_content.GetArrayElementAtIndex(i));
                 }
             }
-
             return height;
         }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
+            Debug.Log("OnGUI()");
             EditorGUI.BeginProperty(position, label, property);
 
             Rect foldoutRect = new Rect(position.x, position.y, position.width, FOLDOUT_HEIGHT);
@@ -67,6 +70,7 @@ namespace Laio.Editor
 
         private GUIContent GetEnumName(int index)
         {
+            Debug.Log("GetEnumName()");
             return new GUIContent(m_valueNames[index]);
         }
 

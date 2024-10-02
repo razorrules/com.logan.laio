@@ -9,7 +9,7 @@ public class UMLViewer : EditorWindow
     [SerializeField] private StyleSheet styleSheet;
     [SerializeField] private VisualTreeAsset visualTreeAsset;
 
-    [MenuItem("Laio/UMLViewer")]
+    //[MenuItem("Laio/UMLViewer")]
     public static void ShowExample()
     {
         UMLViewer wnd = GetWindow<UMLViewer>();

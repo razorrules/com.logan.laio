@@ -1,18 +1,14 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using Laio;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Xml;
 using System.Xml.Linq;
 using System.Text.RegularExpressions;
-using Debug = UnityEngine.Debug;
 
-namespace Laio.Editor.Tools
+namespace LaioEditor.Tools
 {
     /// <summary>
     /// Adjust the default script template and the ability to create custom
@@ -60,7 +56,6 @@ namespace Laio.Editor.Tools
                 return Application.dataPath + "/ScriptTemplates/";
             }
         }
-
 
         internal static string CopyTemplatePath
         {
@@ -277,7 +272,7 @@ namespace Laio.Editor.Tools
                 Toast.ShowToast(new ToastContent("Create Tempalte",
                     TOAST_DESCRIPTION,
                    new ToastInput[] { new ToastInput("Menu", "C# Templates"), new ToastInput("item name"), new ToastInput("file name") },
-                   new ToastButton[] { new ToastButton("Cancel", 0), new ToastButton("Create", 1) }
+                   new ToastButton[] { new ToastButton("Cancel"), new ToastButton("Create") }
                    ));
 
                 Toast.onToastSelection += OnToastSelection;
@@ -593,7 +588,7 @@ namespace Laio.Editor.Tools
 
             public Dictionary<string, bool> Methods;
             public Dictionary<string, bool> Usings;
-
         }
+
     }
 }

@@ -1,80 +1,9 @@
-using System;
-using Laio;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Laio.Editor
+namespace LaioEditor
 {
-    public struct ToastInput
-    {
-        public ToastInput(string name)
-        {
-            this.Name = name;
-            this.Value = "";
-        }
 
-        public ToastInput(string name, string defaultValue)
-        {
-            this.Name = name;
-            this.Value = defaultValue;
-        }
-
-        public string Name;
-        public string Value;
-    }
-
-    public struct ToastButton
-    {
-
-        public ToastButton(string name)
-        {
-            this.Name = name;
-            this.Value = 0;
-        }
-
-        public ToastButton(string name, int defaultValue)
-        {
-            this.Name = name;
-            this.Value = defaultValue;
-        }
-
-        public string Name;
-        public int Value;
-    }
-
-
-    public struct ToastContent
-    {
-
-        public ToastContent(string header,
-            string description,
-            ToastInput[] input,
-            ToastButton[] buttons)
-        {
-            this.Header = header;
-            this.Description = description;
-            this.input = input;
-            this.buttons = buttons;
-        }
-
-        public string Header;
-        public string Description;
-
-        public ToastInput[] input;
-        public ToastButton[] buttons;
-
-        public string[] GetInput()
-        {
-            string[] returnValue = new string[input.Length];
-            for (int i = 0; i < input.Length; i++)
-            {
-                returnValue[i] = input[i].Value;
-            }
-            return returnValue;
-        }
-    }
 
     public delegate void OnToastSelection(string[] inputs, int button);
 
@@ -94,6 +23,12 @@ namespace Laio.Editor
 
         public void OnGUI()
         {
+            if (toastContent.buttons == null)
+            {
+                Close();
+                return;
+            }
+
             GUILayout.Label(toastContent.Header, LaioStyle.Header);
             //GUILayout.Label(toastContent.Description, LaioStyle.WrappingText);
             GUILayout.Space(10);
@@ -134,9 +69,6 @@ namespace Laio.Editor
                 }
             }
             GUILayout.EndHorizontal();
-
         }
-
     }
-
 }

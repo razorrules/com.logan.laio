@@ -37,7 +37,7 @@ namespace Laio
         /// Is the mouse pointer currently overtop of a UI element.
         /// </summary>
         /// <returns>Is the moust over UI</returns>
-        public static bool IsOverUI()
+        public static bool IsPointerOverUI()
         {
             _eventDataCurrentPosition = new PointerEventData(EventSystem.current) { position = Input.mousePosition };
             _results = new List<RaycastResult>();
@@ -53,19 +53,18 @@ namespace Laio
             return value;
         }
 
-        public static T Next<T>(T current) where T : Enum
-        {
-            if (!typeof(T).IsEnum) throw new ArgumentException(String.Format("Argument {0} is not an Enum", typeof(T).FullName));
-
-            T[] Arr = (T[])Enum.GetValues(current.GetType());
-            int j = Array.IndexOf<T>(Arr, current) + 1;
-            return (Arr.Length == j) ? Arr[0] : Arr[j];
-        }
-
         public static Vector3 IntersectionX(Vector3 origin, Vector3 direction, float targetX)
         {
             Vector3 value = origin;
             float multiplication = -((origin.x - targetX) / direction.x);
+            value += direction * multiplication;
+            return value;
+        }
+
+        public static Vector3 IntersectionY(Vector3 origin, Vector3 direction, float targetY)
+        {
+            Vector3 value = origin;
+            float multiplication = -((origin.y - targetY) / direction.y);
             value += direction * multiplication;
             return value;
         }
@@ -77,12 +76,13 @@ namespace Laio
                 .Select(s => s[Random.Next(s.Length)]).ToArray());
         }
 
-        public static Vector3 IntersectionY(Vector3 origin, Vector3 direction, float targetY)
+        public static T Next<T>(T current) where T : Enum
         {
-            Vector3 value = origin;
-            float multiplication = -((origin.y - targetY) / direction.y);
-            value += direction * multiplication;
-            return value;
+            if (!typeof(T).IsEnum) throw new ArgumentException(String.Format("Argument {0} is not an Enum", typeof(T).FullName));
+
+            T[] Arr = (T[])Enum.GetValues(current.GetType());
+            int j = Array.IndexOf<T>(Arr, current) + 1;
+            return (Arr.Length == j) ? Arr[0] : Arr[j];
         }
 
         /// <summary>

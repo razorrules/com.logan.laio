@@ -1,17 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-
-namespace Laio.Editor
+namespace LaioEditor
 {
 
     public static class LaioStyle
     {
 
-        static Font font = Font.CreateDynamicFontFromOSFont("Arial", 12);
+        private static Font font = Font.CreateDynamicFontFromOSFont("Arial", 12);
 
-        static GUIStyle _header;
+        private static GUIStyle _header;
         private static GUIStyle _header1;
         private static GUIStyle _header2;
         private static GUIStyle _header3;
@@ -31,7 +28,6 @@ namespace Laio.Editor
                 return _wrappingText;
             }
         }
-
 
         public static GUIStyle Header
         {
@@ -63,6 +59,7 @@ namespace Laio.Editor
                 return _header1;
             }
         }
+
         public static GUIStyle Header2
         {
             get
@@ -77,6 +74,7 @@ namespace Laio.Editor
                 return _header2;
             }
         }
+
         public static GUIStyle Header3
         {
             get

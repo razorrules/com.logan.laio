@@ -14,11 +14,11 @@ public static class Extensions
     /// </summary>
     /// <param name="v"></param>
     /// <returns></returns>
-    public static Vector3 NormalizeIfNeeded(this Vector3 v)
+    public static Vector3 NormalizeIfNeeded(this Vector3 vector)
     {
-        if (v.magnitude > 1)
-            return v.normalized;
-        return v;
+        if (vector.magnitude > 1)
+            return vector.normalized;
+        return vector;
     }
 
     //--------------- Transforms --------------//
@@ -56,9 +56,9 @@ public static class Extensions
     /// </summary>
     /// <param name="target">Target to get the direction to</param>
     /// <returns>Direction to target</returns>
-    public static Vector3 GetDirection(this Transform t, Vector3 target)
+    public static Vector3 GetDirection(this Transform transform, Vector3 target)
     {
-        return (target - t.position).normalized;
+        return (target - transform.position).normalized;
     }
 
     /// <summary>
@@ -76,31 +76,31 @@ public static class Extensions
     /// <summary>
     /// Explicitly set X position of transform
     /// </summary>
-    /// <param name="T"></param>
+    /// <param name="transform"></param>
     /// <param name="xPosition">Position to set</param>
-    public static void SetPositionX(this Transform T, float xPosition)
+    public static void SetPositionX(this Transform transform, float xPosition)
     {
-        T.transform.position = new Vector3(xPosition, T.transform.position.y, T.position.z);
+        transform.transform.position = new Vector3(xPosition, transform.transform.position.y, transform.position.z);
     }
 
     /// <summary>
     /// Explicitly set Y position of transform
     /// </summary>
-    /// <param name="T"></param>
+    /// <param name="transform"></param>
     /// <param name="yPosition">Position to set</param>
-    public static void SetPositionY(this Transform T, float yPosition)
+    public static void SetPositionY(this Transform transform, float yPosition)
     {
-        T.transform.position = new Vector3(T.transform.position.x, yPosition, T.position.z);
+        transform.transform.position = new Vector3(transform.transform.position.x, yPosition, transform.position.z);
     }
 
     /// <summary>
     /// Explicitly set Z position of transform
     /// </summary>
-    /// <param name="T"></param>
+    /// <param name="transform"></param>
     /// <param name="zPosition">Position to set</param>
-    public static void SetPositionZ(this Transform T, float zPosition)
+    public static void SetPositionZ(this Transform transform, float zPosition)
     {
-        T.transform.position = new Vector3(T.transform.position.x, T.position.y, zPosition);
+        transform.transform.position = new Vector3(transform.transform.position.x, transform.position.y, zPosition);
     }
 
     /// <summary>
@@ -195,7 +195,6 @@ public static class Extensions
     public static T Rand<T>(this IList<T> list)
     { return list[UnityEngine.Random.Range(0, list.Count)]; }
 
-
     /// <summary>
     /// Shuffle full will pick two random indexs and swap them n * n times
     /// </summary>
@@ -254,7 +253,6 @@ public static class Extensions
     }
 
     //----------------- Other -----------------//
-
 
     /// <summary>
     /// Get all child objects of a transform
