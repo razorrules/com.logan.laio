@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Laio
 {
-    //TODO: Add a way to set a method for getting custom names
+    [System.Serializable]
     public class EArray<TEnum, TValue> where TEnum : System.Enum
     {
+        public EArray() { _values = new TValue[0]; }
 
-        private TEnum _enumType;
-
-        private TValue[] _values;
+        [SerializeField] private TValue[] _values;
 
         public TValue this[int index]
         {
