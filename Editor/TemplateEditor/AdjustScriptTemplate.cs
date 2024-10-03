@@ -185,6 +185,8 @@ namespace LaioEditor.Tools
                 }
 
             }
+
+            AssetDatabase.Refresh();
         }
 
         /// <summary>
@@ -269,7 +271,7 @@ namespace LaioEditor.Tools
             //Create a new template
             if (GUILayout.Button("Create Template"))
             {
-                Toast.ShowToast(new ToastContent("Create Tempalte",
+                Toast.ShowToast(new ToastContent("Create Template",
                     TOAST_DESCRIPTION,
                    new ToastInput[] { new ToastInput("Menu", "C# Templates"), new ToastInput("item name"), new ToastInput("file name") },
                    new ToastButton[] { new ToastButton("Cancel"), new ToastButton("Create") }
@@ -413,7 +415,7 @@ namespace LaioEditor.Tools
             GUILayout.BeginVertical();
             //====== Main options
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Class Comments: [" + (_settings.classComments ? "x" : "") + "]"))
+            if (GUILayout.Button("Class Comment: [" + (_settings.classComments ? "x" : "") + "]"))
             {
                 _settings.classComments = !_settings.classComments;
             }
@@ -423,7 +425,7 @@ namespace LaioEditor.Tools
 
             //====== Methods
             GUILayout.BeginVertical("Box");
-            GUILayout.Label("Methods Implemented", LaioStyle.Header2);
+            GUILayout.Label("Methods", LaioStyle.Header2);
 
             foreach (KeyValuePair<string, bool> pair in _settings.Methods.ToList())
             {
@@ -434,7 +436,7 @@ namespace LaioEditor.Tools
 
             //====== Using
             GUILayout.BeginVertical("Box");
-            GUILayout.Label("Usings included", LaioStyle.Header2);
+            GUILayout.Label("Usings", LaioStyle.Header2);
 
             foreach (KeyValuePair<string, bool> pair in _settings.Usings.ToList())
             {
