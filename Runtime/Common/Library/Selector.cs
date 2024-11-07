@@ -17,7 +17,7 @@ namespace Laio.Library
         public int SelectedIndex
         {
             get => _selection;
-            set
+            private set
             {
                 //Ensure that the value wraps around to never go out of range with list
                 int newValue = value;
@@ -38,6 +38,8 @@ namespace Laio.Library
             }
         }
 
+        public T SelectedValue { get => _options[SelectedIndex]; }
+
         public Selector()
         {
             _options = new List<T>();
@@ -48,8 +50,29 @@ namespace Laio.Library
             _options = new List<T>(options);
         }
 
+        public Selector(IList<T> options)
+        {
+            _options = new List<T>(options);
+        }
+
         public void Decrement() =>
             SelectedIndex--;
+
+        public bool TrySelectIndex(int index)
+        {
+            if (_options.Count > index)
+                return false;
+            SelectedIndex = index;
+            return true;
+        }
+
+        public bool TrySelectValue(T value)
+        {
+            if (!_options.Contains(value))
+                return false;
+            SelectedIndex = _options.IndexOf(value);
+            return true;
+        }
 
         public void Increment() =>
             SelectedIndex++;
@@ -59,7 +82,7 @@ namespace Laio.Library
             _options.AddRange(optionRange);
         }
 
-        public void AddOption(T newOption)
+        public void Add(T newOption)
         {
             _options.Add(newOption);
         }

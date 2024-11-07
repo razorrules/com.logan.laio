@@ -1,6 +1,6 @@
 {
   "name": "com.logan.laio",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "displayName": "Laio",
   "description": "Logans all in one",
   "unity": "2020.1",
@@ -18,9 +18,9 @@
   },
   "samples": [
     {
-      "displayName": "FPS Template",
-      "description": "Sample template for an FPS game.",
-      "path": "Samples~/FPSTemplate"
+      "displayName": "Samples",
+      "description": "Get all of the samples from Laio as unity packages. Including GPU Instancing, Bullet Solver, etc.",
+      "path": "Samples~/Laio"
     }
   ]
 }

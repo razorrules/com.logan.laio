@@ -18,7 +18,6 @@ namespace LaioEditor
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
 
-            Debug.Log("GetPropertyHeight()");
             if (m_content == null)
             {
                 m_content = property.FindPropertyRelative("_values");
@@ -46,7 +45,6 @@ namespace LaioEditor
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            Debug.Log("OnGUI()");
             EditorGUI.BeginProperty(position, label, property);
 
             Rect foldoutRect = new Rect(position.x, position.y, position.width, FOLDOUT_HEIGHT);

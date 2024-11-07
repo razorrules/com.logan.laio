@@ -76,21 +76,12 @@ namespace Laio
                 .Select(s => s[Random.Next(s.Length)]).ToArray());
         }
 
-        public static T Next<T>(T current) where T : Enum
-        {
-            if (!typeof(T).IsEnum) throw new ArgumentException(String.Format("Argument {0} is not an Enum", typeof(T).FullName));
-
-            T[] Arr = (T[])Enum.GetValues(current.GetType());
-            int j = Array.IndexOf<T>(Arr, current) + 1;
-            return (Arr.Length == j) ? Arr[0] : Arr[j];
-        }
-
         /// <summary>
         /// Checks if the game has a save directory
         /// </summary>
         /// <param name="dir"></param>
         /// <returns></returns>
-        internal static bool HasSaveDirectory(string dir = "/Save")
+        public static bool HasSaveDirectory(string dir = "/Save")
         {
             return Directory.Exists(Application.persistentDataPath + dir);
         }
@@ -135,6 +126,17 @@ namespace Laio
             returnValue.y = (float)(random.NextDouble() - .5f) * 2;
             return returnValue;
         }
+
+        public static T Next<T>(T current) where T : Enum
+        {
+            if (!typeof(T).IsEnum) throw new ArgumentException(String.Format("Argument {0} is not an Enum", typeof(T).FullName));
+
+            T[] Arr = (T[])Enum.GetValues(current.GetType());
+            int j = Array.IndexOf<T>(Arr, current) + 1;
+            return (Arr.Length == j) ? Arr[0] : Arr[j];
+        }
+
+        public static T[] EnumValues<T>() where T : Enum => Enum.GetValues(typeof(T)).Cast<T>().ToArray();
 
         /// <summary>
         /// Get a random enum value

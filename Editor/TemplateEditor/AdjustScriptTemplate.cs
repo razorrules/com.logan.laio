@@ -205,7 +205,7 @@ namespace LaioEditor.Tools
                 Load();
                 _firstOpen = false;
             }
-            catch (DirectoryNotFoundException exception)
+            catch
             {
                 this.Close();
             }
@@ -239,8 +239,6 @@ namespace LaioEditor.Tools
             }
         }
 
-
-
         private void OnGUI()
         {
             try
@@ -249,7 +247,7 @@ namespace LaioEditor.Tools
                 if (_settings.Methods == null || _firstOpen)
                     HotReload();
             }
-            catch (FileNotFoundException exception)
+            catch
             {
                 return;
             }

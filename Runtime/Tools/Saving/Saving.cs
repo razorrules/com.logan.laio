@@ -34,7 +34,6 @@ public static class Saving
 
     }
 
-
     /// <summary>
     /// Load a scriptable object
     /// </summary>
@@ -75,7 +74,6 @@ public static class Saving
     {
         return (T)LoadObject(typeof(T), name, path, extension);
     }
-
 
     //========================  ScriptableObjects  ======================== //
 

@@ -12,14 +12,16 @@ namespace LaioEditor
         private const float FOLDOUT_HEIGHT = 16f;
 
         private SerializedProperty _weightCount;
-        private SerializedProperty _content;
+        private SerializedProperty _values;
+        private SerializedProperty _valuesWeight;
         private Type _type;
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            if (_content == null)
+            if (_values == null)
             {
-                _content = property.FindPropertyRelative("values");
+                _values = property.FindPropertyRelative("values");
+                _valuesWeight = property.FindPropertyRelative("valuesWeight");
                 _type = fieldInfo.FieldType.GenericTypeArguments[0];
                 _weightCount = property.FindPropertyRelative("WeightCount");
             }
@@ -28,18 +30,14 @@ namespace LaioEditor
 
             if (property.isExpanded)
             {
-                if (_content.arraySize != _weightCount.intValue)
+                if (_values.arraySize != _weightCount.intValue ||
+                    _valuesWeight.arraySize != _weightCount.intValue)
                 {
-                    _content.arraySize = _weightCount.intValue;
+                    _values.arraySize = _weightCount.intValue;
+                    _valuesWeight.arraySize = _weightCount.intValue;
                 }
 
                 height += EditorGUI.GetPropertyHeight(_weightCount);
-
-                for (int i = 0; i < _content.arraySize; i++)
-                {
-                    height += EditorGUI.GetPropertyHeight(_content.GetArrayElementAtIndex(i));
-                }
-
             }
 
             return height;
@@ -55,7 +53,7 @@ namespace LaioEditor
             if (property.isExpanded)
             {
                 float addY = FOLDOUT_HEIGHT;
-                for (int i = 0; i < _content.arraySize + 1; i++)
+                for (int i = 0; i < _values.arraySize + 1; i++)
                 {
                     Rect rect;
                     if (i == 0)
@@ -68,24 +66,22 @@ namespace LaioEditor
                         continue;
                     }
 
-                    rect = new Rect(position.x, position.y + addY, position.width, EditorGUI.GetPropertyHeight(_content.GetArrayElementAtIndex(i - 1)));
+                    rect = new Rect(position.x, position.y + addY, position.width, EditorGUI.GetPropertyHeight(_values.GetArrayElementAtIndex(i - 1)));
                     addY += rect.height;
 
                     EditorGUILayout.BeginHorizontal();
 
-                    EditorGUILayout.IntSlider(0, 0, 100);
+                    var val = _valuesWeight.GetArrayElementAtIndex(i - 1);
 
-                    EditorGUI.PropertyField(rect,
-                        _content.GetArrayElementAtIndex(i - 1), null, true);
+                    EditorGUILayout.PropertyField(_values.GetArrayElementAtIndex(i - 1), GUIContent.none, false);
+
+                    val.intValue = EditorGUILayout.IntSlider(val.intValue, 0, 1000);
 
                     EditorGUILayout.EndHorizontal();
                 }
             }
 
             EditorGUI.EndProperty();
-
         }
-
     }
-
 }
