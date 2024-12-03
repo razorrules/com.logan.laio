@@ -20,7 +20,7 @@ namespace Laio.Samples
         private void Awake()
         {
             SceneLoading.onProgressUpdate += OnProgressUpdate;
-            SceneLoading.onLoadignScreenVisibilityChange += OnLoadingScreenVisibilityChange;
+            SceneLoading.onLoadingScreenVisibilityChange += OnLoadingScreenVisibilityChange;
         }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace Laio.Samples
         private void OnDestroy()
         {
             SceneLoading.onProgressUpdate -= OnProgressUpdate;
-            SceneLoading.onLoadignScreenVisibilityChange -= OnLoadingScreenVisibilityChange;
+            SceneLoading.onLoadingScreenVisibilityChange -= OnLoadingScreenVisibilityChange;
         }
 
         /// <summary>

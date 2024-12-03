@@ -20,12 +20,22 @@ namespace Laio
     public static class SceneLoading
     {
         public static OnProgressUpdate onProgressUpdate;
-        public static OnLoadingScreenVisibilityChange onLoadignScreenVisibilityChange;
+        public static OnLoadingScreenVisibilityChange onLoadingScreenVisibilityChange;
         public static OnLoadingFinished onLoadingFinished;
 
         internal static AsyncOperation asyncOperation;
         internal static float targetValue;
         internal static float currentValue;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSplashScreen)]
+        private static void ResetDelegates()
+        {
+
+            onProgressUpdate = null;
+            onLoadingScreenVisibilityChange = null;
+            onLoadingFinished = null;
+        }
+
 
         /// <summary>
         /// Load scene and begin the loading screen delegates.
@@ -34,7 +44,7 @@ namespace Laio
         public static void LoadScene(int buildIndex)
         {
             asyncOperation = SceneManager.LoadSceneAsync(buildIndex);
-            onLoadignScreenVisibilityChange?.Invoke(true);
+            onLoadingScreenVisibilityChange?.Invoke(true);
             Loading();
         }
 
@@ -45,7 +55,7 @@ namespace Laio
         public static void LoadScene(string sceneName)
         {
             asyncOperation = SceneManager.LoadSceneAsync(sceneName);
-            onLoadignScreenVisibilityChange?.Invoke(true);
+            onLoadingScreenVisibilityChange?.Invoke(true);
             Loading();
         }
 
@@ -57,7 +67,7 @@ namespace Laio
         public static void LoadScene(AsyncOperation loadSceneOperation)
         {
             asyncOperation = loadSceneOperation;
-            onLoadignScreenVisibilityChange?.Invoke(true);
+            onLoadingScreenVisibilityChange?.Invoke(true);
             Loading();
         }
 
@@ -85,7 +95,7 @@ namespace Laio
             } while (currentValue < 1);
 
             asyncOperation = null;
-            onLoadignScreenVisibilityChange?.Invoke(false);
+            onLoadingScreenVisibilityChange?.Invoke(false);
             onLoadingFinished?.Invoke();
         }
 

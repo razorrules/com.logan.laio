@@ -1,4 +1,6 @@
 Laio
 Laio (Logans All In One) Unity package
 
-Laio is intended to include many extension methods, features, tools, etc that I wish unity included by default. Laio is something that I personally use and simply work on in my free time. I have only began work on this, however, I hope other people may find use in what I am creating.
+This Unity package aims to provide commonly used tools, methods, extensions and systems to speed up the development process.
+
+If you want to read more about it visit: https://razorrules.github.io/laio-documentation/
