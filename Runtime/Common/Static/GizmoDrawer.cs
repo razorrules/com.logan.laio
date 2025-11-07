@@ -61,7 +61,7 @@ namespace Laio
             }
             Matrix4x4 _cacheMatrix = Gizmos.matrix;
             Gizmos.matrix = bounds.transform.localToWorldMatrix;
-            Gizmos.color = Color.red;
+            Gizmos.color = color;
             Gizmos.DrawWireCube(bounds.center, bounds.size);
 #if UNITY_EDITOR
             Matrix4x4 _cachedHandleMatrix = UnityEditor.Handles.matrix;

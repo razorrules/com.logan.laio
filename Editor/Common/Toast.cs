@@ -9,17 +9,17 @@ namespace LaioEditor
 
     public class Toast : EditorWindow
     {
-        public static OnToastSelection onToastSelection;
-        private static ToastContent toastContent;
+        public OnToastSelection onToastSelection;
+        private ToastContent toastContent;
 
-        public static void ShowToast(ToastContent content)
+        public static Toast ShowToast(ToastContent content, OnToastSelection callback = null)
         {
-            Toast window = (Toast)EditorWindow.GetWindow(typeof(Toast));
-            window.name = "Toast";
-            window.maxSize = new Vector2(350, 225);
-            window.minSize = new Vector2(350, 225);
-            toastContent = content;
+            var window = GetWindow<Toast>("Toast");
+            window.toastContent = content;
+            window.onToastSelection = callback;
+            return window;
         }
+
 
         public void OnGUI()
         {
