@@ -273,9 +273,7 @@ namespace LaioEditor.Tools
                     TOAST_DESCRIPTION,
                    new ToastInput[] { new ToastInput("Menu", "C# Templates"), new ToastInput("item name"), new ToastInput("file name") },
                    new ToastButton[] { new ToastButton("Cancel"), new ToastButton("Create") }
-                   ));
-
-                Toast.onToastSelection += OnToastSelection;
+                   ), OnToastSelection);
             }
             GUILayout.EndHorizontal();
 
@@ -398,9 +396,6 @@ namespace LaioEditor.Tools
 
             //Reimport the new file
             AssetDatabase.ImportAsset("Assets/ScriptTemplates/" + newFile);
-
-            //Remove delegate assignment
-            Toast.onToastSelection -= OnToastSelection;
         }
 
         /// <summary>
